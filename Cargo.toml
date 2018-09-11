@@ -1,0 +1,11 @@
+[workspace] 
+
+members = [
+    "api-parser",
+    "api-analyzer",
+    "api-codegen",
+    "api-codegen-rust",
+    "api-rust-helpers",
+    "plugin-manager",
+    "apigen"
+]

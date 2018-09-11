@@ -1,0 +1,34 @@
+
+import  ./models.api
+
+get /_api/database/current {
+    returns {
+        200 Result<{
+            id string
+            name string
+            path string
+            isSystem bool
+        }>
+        400 Result<string>
+    }
+}
+
+post /_api/database {
+    body {
+        name string
+        users User[]
+    }
+    returns {
+        201 Result<bool>
+    }
+    description {
+        Create new database
+    }
+}
+
+delete /_api/database/:database_name {
+    returns {
+        200 Result<bool>
+        400 Result<string>
+    }
+}

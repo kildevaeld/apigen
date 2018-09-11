@@ -1,0 +1,13 @@
+[package]
+name = "apigen"
+version = "0.1.0"
+authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
+
+[dependencies]
+api-parser = { path = "../api-parser", version = "*" }
+api-analyzer = { path = "../api-analyzer", version = "*" }
+api-codegen = { path = "../api-codegen", version = "*" }
+api-codegen-rust = { path = "../api-codegen-rust", version = "*" }
+
+serde_json = "1.0"
+clap = "~2.32"

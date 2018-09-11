@@ -1,0 +1,218 @@
+
+
+main = _{ soi  ~ body*  ~ eoi }
+
+body = _{ 
+    wscmnl* 
+    ~ ( 
+        generic_record_type | record_type | enum_type | import | http_endpoint
+    ) 
+    ~wscmnl* 
+}
+
+
+// import
+import = {
+    import_keyword ~wscm*~ path
+}
+
+import_keyword = _{ "import" }
+
+// Record
+//
+// @annotaion
+// record Name {
+//  prop string    
+// }
+generic_record_type = {
+    (annotations* ~ wscmnl+)? ~ "record" ~ wscm+ ~ type_name ~ wscm* ~  "<"~ generic_type_parameters ~">" ~ wscmnl*  ~ "{"  ~ wscmnl*
+    ~ record_type_body*
+    ~ wscmnl*
+    ~ "}"
+}
+
+generic_type_parameters =  { identifier ~( "," ~wscmnl* ~identifier)* }
+
+
+record_type = { 
+    (annotations* ~ wscmnl+)? ~ "record" ~ wscm* ~ type_name ~ wscm* ~ "{" ~ wscmnl*
+        ~ record_type_body*
+        ~ wscmnl*
+        ~ "}"
+}
+
+anonymous_record_type = {
+    "{" ~ wscmnl*
+        ~ record_type_body*
+        ~ wscmnl*
+        ~ "}"
+}
+
+record_type_body = _{ property ~ (wscmnl+ ~ property)* }
+
+// Enum
+enum_type = {
+    "enum" ~ wscm* ~ type_name ~ wscm* ~ "{" ~ wscmnl* 
+        ~ enum_type_body* 
+        ~ wscmnl* 
+        ~ "}"
+}
+
+enum_type_body = _{
+    identifier ~ ((comma | nl) ~wscmnl* ~ identifier )*
+}
+
+// Property 
+property = { (annotations* ~ wscmnl+)? ~ identifier ~ ws+ ~ all_types }
+
+
+// HTTP-API
+http_endpoint = { http_method ~wscm+ ~ http_path ~wscmnl+ ~ "{" ~wscmnl+ 
+    ~ http_endpoint_body_*
+    ~ wscmnl*
+    ~ "}"
+}
+
+http_endpoint_body_ = _{
+    http_endpoint_property ~(wscmnl+ ~http_endpoint_property)*
+}
+
+http_endpoint_property = _{
+    http_endpoint_returns
+    | http_endpoint_body
+    | http_endpoint_query
+    | http_endpoint_description_wrapper
+}
+
+http_endpoint_body = {
+    "body" ~wscmnl* ~ all_types 
+}
+
+http_endpoint_query = {
+    "query" ~wscmnl* ~ (generic_type | anonymous_record_type | type_name)
+}
+
+http_endpoint_returns = {
+    "returns" ~wscmnl* ~ "{" ~wscmnl*
+    ~ http_endpoint_returns_body
+    ~ wscmnl* 
+    ~"}"
+}
+
+http_endpoint_description_wrapper = _{
+    "description" ~wscmnl* ~ "{" ~ http_endpoint_description ~"}"
+}
+
+http_endpoint_description = {
+    (!"}" ~ any)*
+}
+
+http_endpoint_returns_body = _{
+    http_endpoint_returns_body_property ~(wscmnl+ ~http_endpoint_returns_body_property)*
+}
+
+http_endpoint_returns_body_property = _{
+    http_status_code ~wscmnl* ~ all_types
+}
+
+
+http_path =  { "/" ~ (http_path_segment ~ ("/" ~ http_path_segment)*)? }
+http_path_segment =  _{ http_path_segment_part | http_path_segment_param }
+http_path_segment_part = { path_segment }
+http_path_segment_param = { ":" ~ path_segment }
+
+http_method = { "get" | "post" | "put" | "patch" | "delete" }
+
+http_status_code = {
+    digit{3}
+}
+
+
+// Types 
+all_types = _{ optional_type | repeated_type | generic_type | anonymous_record_type | types }
+optional_type = { (types | repeated_type | generic_type) ~ "?" } 
+
+repeated_type = { (types | generic_type)~ "[]" }
+
+generic_type = { type_name ~"<" ~(optional_type | repeated_type | types | anonymous_record_type)  ~ ">" }
+
+types = _{ type_builtins | type_name }
+
+type_builtins = { 
+    "int8" | "int16" | "int32" | "int64" |
+    "uint8" | "uint16" | "uint32" | "uint64" |
+    "float" | "double" |
+    "string" | "bytes" |
+    "bool" | "map"
+}
+
+// Annotation
+annotations = _{ annotation ~( wscmnl+ ~annotation)* }
+annotation = {
+    "@" ~ identifier  ~ "(" ~ wscmnl* ~json ~ wscmnl* ~ ")" |
+    "@" ~ identifier
+}
+
+
+// Path
+
+path =  { (relative_path | absolute_path) ~ (path_segment ~ ("/" ~ path_segment)*)? }
+relative_path = _{ (".." | ".") ~ "/" }
+absolute_path = _{ "/" }
+path_segment = _{ ( alpha | digit | "." |  "_" | "$")+ }
+
+
+// Common
+
+identifier = {  alpha ~(alpha | digit | "_" )* }
+
+type_name = { 'A'..'Z'~(alpha | digit | "_" )* }
+
+comma = _{ "," }
+
+colon = _{ ":" }
+
+alphas = _{ 'A'..'Z' }
+
+alpha = _{ 'a'..'z' | 'A'..'Z' }
+
+digit = _{ '0'..'9' }
+
+ws = _{ " " | "\t" }
+
+nl = _{ "\r" | "\n" }
+
+cm = _{ "/*" ~ (!"*/" ~ any)* ~ "*/" }
+
+wscm = _{ ( cm | ws ) }
+
+wscmnl = _{ ( cm | ws | nl ) }
+
+
+// JSON
+
+json = _{ json_value }
+
+json_object = { "{" ~wscmnl* ~ json_pair ~ ("," ~wscmnl* ~ json_pair)* ~ wscmnl* ~ "}" | "{" ~ "}" }
+json_pair   = { srting_or_identifier ~ wscmnl* ~ ":" ~ wscmnl* ~ json_value }
+
+array = { "[" ~ json_value ~ ("," ~ json_value)* ~ "]" | "[" ~ "]" }
+
+json_value = { srting_or_identifier | number | json_object | array | bool | null }
+
+srting_or_identifier = _{ string | identifier }
+string  = @{ "\"" ~ inner ~ "\"" }
+inner   = @{ (!("\"" | "\\") ~ any)* ~ (escape ~ inner)? }
+escape  = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
+unicode = @{ "u" ~ hex_digit{4} }
+hex_digit = @{ '0'..'9' | 'a'..'f' | 'A'..'F' }
+number = { '0'..'9'+ }
+
+bool = { "true" | "false" }
+
+null = { "null" }
+
+
+WHITESPACE = _{ " " }
+
+COMMENT =  _{ "/*" ~ (!"*/" ~ any)* ~ "*/" }

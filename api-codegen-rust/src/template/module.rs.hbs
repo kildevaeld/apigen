@@ -1,0 +1,59 @@
+use futures::{Future, Stream};
+use reqwest::async::{Client, Decoder};
+use reqwest::header::CONTENT_TYPE;
+use reqwest::{Method, Request};
+use std::mem;
+
+use api_support::error;
+use api_support::utils;
+{{#each user_types}}
+{{{this}}}
+{{/each}}
+{{#if methods}}
+pub struct {{{module_name}}} {
+    client: Client,
+    endpoint: String,
+}
+
+impl {{module_name}} {
+    pub fn new(endpoint: &str) -> {{module_name}} {
+        {{module_name}}::with_client(Client::new(), endpoint)
+    }
+
+    pub fn with_client(client: Client, endpoint: &str) -> {{module_name}} {
+        {{module_name}}{
+            client: client,
+            endpoint: String::from(endpoint),
+        }
+    }
+    {{#each methods}}
+    {{{this}}}
+    {{/each}}
+
+    fn request<T: Serializable + ?Size>(request: Request) -> impl Future<Item=T, Error=error::Error> {
+        self.client
+        .execute(request.build().unwrap())
+        .from_err::<error::Error>()
+        .and_then(|mut res| {
+            let status = res.status().as_u16();
+            let body = mem::replace(res.body_mut(), Decoder::empty());
+
+            let mime = res
+                .headers()
+                .get(CONTENT_TYPE)
+                .and_then(|ct| ct.to_str().ok())
+                .unwrap_or("application/json")
+                .to_string();
+
+            if res.is_success {
+                return body.concat2()
+                .from_err::<error::Error>()
+                .and_then(move |b| Ok(utils::decode::<T>(&mime, &b)?));
+            }
+
+            Err(error::Error::Invalid)
+        })
+        .from_err()
+    }
+}
+{{/if}}

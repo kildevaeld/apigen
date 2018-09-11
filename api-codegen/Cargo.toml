@@ -1,0 +1,15 @@
+[package]
+name = "api-codegen"
+version = "0.1.0"
+authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
+
+[dependencies]
+api-analyzer = { path = "../api-analyzer", version = "*" }
+api-parser = { path = "../api-parser", version = "*" }
+plugin-manager = { path = "../plugin-manager", version = "*" }
+bytes = { version = "0.4", features = ["serde"] }
+serde = "1.0"
+serde_derive = "1.0"
+uuid = { version = "0.7", features = ["v4", "serde"] }
+error-chain = "~0.12.0"
+

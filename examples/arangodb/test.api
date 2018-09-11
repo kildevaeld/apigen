@@ -1,0 +1,14 @@
+
+get /test/:mig_ioret/ost {
+    returns {
+        200 Test<string> 
+        201 Resp
+        400 Rest<{
+            test string
+        }>
+    }
+    body bytes
+    query {
+        query string
+    }
+}

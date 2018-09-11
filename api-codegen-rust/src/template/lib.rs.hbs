@@ -1,0 +1,15 @@
+#[macro_use]
+extern crate serde_derive;
+extern crate futures;
+extern crate reqwest;
+extern crate serde;
+extern crate serde_json;
+extern crate tokio;
+extern crate url;
+extern crate api_support;
+
+pub use api_support::error;
+{{#each modules}}
+mod {{this}};
+pub use {{this}}::*;
+{{/each}}

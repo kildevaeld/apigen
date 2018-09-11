@@ -1,0 +1,40 @@
+
+use hyper::Body;
+use serde_json;
+
+pub mod error {
+    enum Error {
+        Http(hyper::Error),
+        Json(serde_json::Error),
+        Format(String),
+        Client(u16, String),
+    }
+
+    impl From<hyper::Error> for Error {
+        fn from(err: hyper::Error) -> Error {
+            Error::Http(err)
+        }
+    }
+
+    impl From<serde_json::Error> for Error {
+        fn from(err: serde_json::Error) -> Error {
+            Error::Json(err)
+        }
+    }
+}
+
+pub fn decode<T: Deserialisable>(mime: &str, body: &Body) -> impl Future<Item=T, Error=error::Error> {
+    body.concat2().and_then(|body| {
+        match mime {
+            "application/json" => Ok(serde_json::from_slice(&body)),
+            _ => { 
+                Err(error:Error::Format(format!("invalid format: '{}'", mime)))
+            }
+        }
+    }).from_err()
+}
+
+pub fn join(endpoint: &str, path: &str) -> Result<hyper::Uri> {
+    let endpoint
+
+}
