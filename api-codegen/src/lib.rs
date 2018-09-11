@@ -5,11 +5,13 @@ extern crate plugin_manager;
 extern crate uuid;
 #[macro_use]
 extern crate error_chain;
+extern crate rayon;
 
+mod code_generator;
 pub mod error;
 mod repository;
 //pub mod unit;
-
+pub use code_generator::*;
 pub use error::*;
 pub use repository::*;
 

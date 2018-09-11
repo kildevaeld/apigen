@@ -3,9 +3,9 @@ use api_parser::expressions::ModuleExpression;
 use common::read_file;
 use error::Result;
 use passes::{import, typevalidator};
-use types::Pass;
-
 use std::fs;
+use std::path::Path;
+use types::Pass;
 
 #[allow(dead_code)]
 pub fn default_passes() -> Vec<Box<dyn Pass>> {
@@ -24,13 +24,13 @@ pub fn analyze_file(file: &str, passes: &Vec<Box<dyn Pass>>) -> Result<ModuleExp
     return analyze(resolve_file.to_str().unwrap(), ast, passes);
 }
 
-pub fn analyze(
-    file_name: &str,
+pub fn analyze<T: AsRef<Path>>(
+    file_name: T,
     ast: ModuleExpression,
     passes: &Vec<Box<dyn Pass>>,
 ) -> Result<ModuleExpression> {
     let mut file = ast.clone();
-    file.path = file_name.to_string();
+    file.path = file_name.as_ref().to_path_buf();
 
     for pass in passes {
         file = pass.execute(&file, passes)?;

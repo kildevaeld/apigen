@@ -1,5 +1,5 @@
 
-record Response<Test, Test2> {
+record Response<T> {
     error bool
     code int16
     result T

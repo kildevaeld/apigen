@@ -5,12 +5,17 @@ use handlebars::Handlebars;
 use heck::CamelCase;
 use std::path::PathBuf;
 use template::{render_module, ModuleModel};
-use visitors::{EndpointVisitor, GenericRecordVisitor, RecordVisitor};
-pub struct RustCodeGenerator {}
+use visitor::ModuleVisitor;
+
+pub struct RustCodeGenerator {
+    visitor: ModuleVisitor,
+}
 
 impl RustCodeGenerator {
     pub fn new() -> RustCodeGenerator {
-        RustCodeGenerator {}
+        RustCodeGenerator {
+            visitor: ModuleVisitor::new(),
+        }
     }
 }
 
@@ -24,46 +29,62 @@ fn indent(s: &str, indent: &str) -> String {
 
 impl CodeGenerator for RustCodeGenerator {
     fn transform(&self, ast: &ModuleExpression) -> Result<Vec<Artifact>> {
-        let mut methods: Vec<String> = vec![];
-        let mut records: Vec<String> = vec![];
+        let content = self.visitor.visit(ast);
 
-        let rec_v = RecordVisitor::new();
-        let grec_v = GenericRecordVisitor::new();
-        let end_v = EndpointVisitor::new();
+        let mut path = PathBuf::from(&ast.path);
+        path.set_extension(".rs");
+        // let ext = path.extension().unwrap_or_default().to_str().unwrap();
+        // let name = path
+        //     .file_name()
+        //     .unwrap()
+        //     .to_str()
+        //     .unwrap()
+        //     .replace(&ext, "");
 
-        for exp in &ast.body {
-            if let Some(entry) = match exp {
-                Expression::Record(record) => Some(rec_v.visit_record(&record)),
-                Expression::GenericRecord(record) => Some(grec_v.visit_generic_record(&record)),
-                Expression::HttpEndpoint(endpoint) => {
-                    methods.push(indent(&end_v.visit_endpoint(&endpoint), "  "));
-                    None
-                }
-                _ => None,
-            } {
-                records.push(entry);
-            }
-        }
-
-        let path = PathBuf::from(&ast.path);
-        let ext = path.extension().unwrap_or_default().to_str().unwrap();
-        let name = path
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .replace(&ext, "");
-
-        let content = render_module(&ModuleModel {
-            methods: methods,
-            module_name: name.to_camel_case(),
-            user_types: records,
-        });
-
-        println!("{}", content);
         Ok(vec![Artifact {
-            path: PathBuf::new(),
+            path: path,
             content: Bytes::from(content),
         }])
+        // let mut methods: Vec<String> = vec![];
+        // let mut records: Vec<String> = vec![];
+
+        // let rec_v = RecordVisitor::new();
+        // let grec_v = GenericRecordVisitor::new();
+        // let end_v = EndpointVisitor::new();
+
+        // for exp in &ast.body {
+        //     if let Some(entry) = match exp {
+        //         Expression::Record(record) => Some(rec_v.visit_record(&record)),
+        //         Expression::GenericRecord(record) => Some(grec_v.visit_generic_record(&record)),
+        //         Expression::HttpEndpoint(endpoint) => {
+        //             methods.push(indent(&end_v.visit_endpoint(&endpoint), "  "));
+        //             None
+        //         }
+        //         _ => None,
+        //     } {
+        //         records.push(entry);
+        //     }
+        // }
+
+        // let path = PathBuf::from(&ast.path);
+        // let ext = path.extension().unwrap_or_default().to_str().unwrap();
+        // let name = path
+        //     .file_name()
+        //     .unwrap()
+        //     .to_str()
+        //     .unwrap()
+        //     .replace(&ext, "");
+
+        // let content = render_module(&ModuleModel {
+        //     methods: methods,
+        //     module_name: name.to_camel_case(),
+        //     user_types: records,
+        // });
+
+        // println!("{}", content);
+        // Ok(vec![Artifact {
+        //     path: PathBuf::new(),
+        //     content: Bytes::from(content),
+        // }])
     }
 }

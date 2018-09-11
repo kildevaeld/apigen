@@ -1,4 +1,3 @@
-use analyze::analyze_file;
 use api_parser::expressions::{
     AnonymousRecordExpression, EnumExpression, Expression, GenericExpression,
     GenericRecordExpression, HttpEndpointExpression, HttpEndpointPropertyExpression,
@@ -6,7 +5,6 @@ use api_parser::expressions::{
     TypeExpression,
 };
 use error::{AnalyzerError, Result};
-use std::path::Path;
 use types::Pass;
 
 #[derive(Debug)]

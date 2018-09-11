@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 #[serde(tag = "type", content = "value")]
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum Type {
@@ -38,7 +40,7 @@ pub struct Location(pub usize, pub usize);
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ModuleExpression {
-    pub path: String,
+    pub path: PathBuf,
     pub imports: Vec<ModuleExpression>,
     pub body: Vec<Expression>,
 }

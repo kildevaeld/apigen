@@ -1,10 +1,12 @@
 use api_parser::expressions::ModuleExpression;
 use bytes::Bytes;
+
+use code_generator::CodeGenerator;
 use error::Result;
 use plugin_manager::{Plugin, PluginManager};
 use std::path::{Path, PathBuf};
+use std::str;
 use uuid::Uuid;
-
 pub struct CodeGeneratorPluginBuilder {}
 
 pub trait CodeGeneratorPlugin {
@@ -35,10 +37,10 @@ impl Artifact {
     pub fn path_mut(&mut self) -> &mut PathBuf {
         &mut self.path
     }
-}
 
-pub trait CodeGenerator {
-    fn transform(&self, ast: &ModuleExpression) -> Result<Vec<Artifact>>;
+    pub fn as_str(&self) -> &str {
+        str::from_utf8(self.content.as_ref()).unwrap()
+    }
 }
 
 pub struct RepositoryEntry {

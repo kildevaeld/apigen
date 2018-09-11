@@ -17,8 +17,8 @@ impl Import {
         parent: &ModuleExpression,
         passes: &Vec<Box<dyn Pass>>,
     ) -> Result<ModuleExpression> {
-        let ppath = Path::new(parent.path.as_str());
-        let pdir = ppath.parent();
+        //let ppath = Path::new(parent.path.as_str());
+        let pdir = parent.path.parent();
 
         if let None = pdir {
             return Err(AnalyzerError::Import("parent has no path".to_string()));
@@ -41,11 +41,7 @@ impl Pass for Import {
     ) -> Result<ModuleExpression> {
         if !ast.imports.is_empty() {
             return Err(AnalyzerError::Import("Import already run".to_string()));
-        } else if ast.path.is_empty() {
-            return Err(AnalyzerError::Import("Path cannot be empty".to_string()));
         }
-
-        let path = Path::new(&ast.path);
 
         let mut clone = ast.clone();
 

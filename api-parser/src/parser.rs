@@ -2,6 +2,7 @@ use error::Result;
 use expressions::*;
 use lexer::{tokenize, Pair, Rule};
 use pest;
+use std::path::Path;
 
 fn parse_record(input: &Pair) -> RecordExpression {
     let span = input.clone().into_span();
@@ -28,6 +29,42 @@ fn parse_record(input: &Pair) -> RecordExpression {
     }
 
     return record;
+}
+
+fn parse_generic_record_type(input: &Pair) -> GenericRecordExpression {
+    let span = input.clone().into_span();
+    let mut record = GenericRecordExpression {
+        name: String::from(""),
+        properties: vec![],
+        type_names: vec![],
+        location: Location(span.start(), span.end()),
+    };
+
+    let cloned = input.clone();
+
+    for pair in cloned.into_inner() {
+        let span = pair.clone().into_span();
+        match pair.as_rule() {
+            Rule::type_name => record.name = String::from(span.as_str()),
+            Rule::generic_type_parameters => {
+                for inner_pair in pair.clone().into_inner() {
+                    let inner_span = inner_pair.clone().into_span();
+                    match inner_pair.as_rule() {
+                        Rule::identifier => record.type_names.push(inner_span.as_str().to_string()),
+                        _ => {}
+                    };
+                }
+            }
+            //Rule::annotation => record.annotations.push(parse_annotation(&pair)),
+            Rule::property => {
+                let prop = parse_property(&pair);
+                record.properties.push(prop);
+            }
+            _ => {}
+        };
+    }
+
+    record
 }
 
 fn parse_import(input: &Pair) -> ImportExpression {
@@ -392,12 +429,15 @@ pub fn build_ast(input: &str) -> Result<ModuleExpression> {
     build_ast_path(input, "")
 }
 
-pub fn build_ast_path(input: &str, path: &str) -> Result<ModuleExpression> {
+pub fn build_ast_path<T: AsRef<Path>>(input: &str, path: T) -> Result<ModuleExpression> {
     let pairs = tokenize(input)?;
     let mut exps: Vec<Expression> = vec![];
 
     for pair in pairs {
         let exp = match pair.as_rule() {
+            Rule::generic_record_type => {
+                Expression::GenericRecord(parse_generic_record_type(&pair))
+            }
             Rule::record_type => Expression::Record(parse_record(&pair)),
             Rule::import => Expression::Import(parse_import(&pair)),
             Rule::enum_type => Expression::Enum(parse_enum(&pair)),
@@ -406,6 +446,7 @@ pub fn build_ast_path(input: &str, path: &str) -> Result<ModuleExpression> {
         };
 
         if exp == Expression::Invalid {
+            println!("invalid {:?}", pair);
             continue;
         }
         exps.push(exp)
@@ -414,6 +455,6 @@ pub fn build_ast_path(input: &str, path: &str) -> Result<ModuleExpression> {
     Ok(ModuleExpression {
         body: exps,
         imports: vec![],
-        path: path.to_owned(),
+        path: path.as_ref().to_path_buf(),
     })
 }
