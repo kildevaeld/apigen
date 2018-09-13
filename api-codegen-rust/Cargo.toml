@@ -12,3 +12,7 @@ handlebars = "1.0.3"
 serde = "1.0"
 heck = "0.3.0"
 serde_derive = "1.0"
+rayon = "1.0"
+plugin-manager = { path = "../plugin-manager", version = "*" }
+[lib]
+crate-type = ["cdylib", "rlib"]

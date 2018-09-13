@@ -1,31 +1,25 @@
-use api_analyzer::AnalyzerError;
-use api_parser::ParserError;
+use api_analyzer;
+use api_codegen;
+use api_parser;
+use plugin_manager;
 use std::io;
-use std::result;
 
-pub type Result<T> = result::Result<T, Error>;
-
-#[derive(Debug)]
-pub enum Error {
-    ApiGenCore(ParserError),
-    Analyzer(AnalyzerError),
-    Io(io::Error),
-}
-
-impl From<io::Error> for Error {
-    fn from(err: io::Error) -> Error {
-        Error::Io(err)
+error_chain!{
+    foreign_links {
+        Io(io::Error) #[doc = "Error during IO"];
+        Analyzer(api_analyzer::AnalyzerError) #[doc = "Error during analyzation"];
+        Parser(api_parser::ParserError);
     }
-}
 
-impl From<ParserError> for Error {
-    fn from(err: ParserError) -> Error {
-        Error::ApiGenCore(err)
+    links {
+        Codegen(api_codegen::error::Error, api_codegen::error::ErrorKind);
+        Plugins(plugin_manager::error::Error, plugin_manager::error::ErrorKind);
     }
-}
 
-impl From<AnalyzerError> for Error {
-    fn from(err: AnalyzerError) -> Error {
-        Error::Analyzer(err)
+    errors {
+        Resolve(path: String) {
+            description("could not resolve path")
+            display("unable to resolve path {}", path)
+        }
     }
 }

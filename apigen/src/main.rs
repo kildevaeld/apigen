@@ -5,6 +5,13 @@ extern crate api_codegen_rust;
 extern crate serde_json;
 #[macro_use]
 extern crate clap;
+extern crate plugin_manager;
+#[macro_use]
+extern crate error_chain;
+
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 
 // use apigen_core::tokenize;
 // use std::fs::File;
@@ -18,7 +25,7 @@ mod common;
 mod error;
 
 fn main() -> error::Result<()> {
-
+     env_logger::init();
 
     let matches = clap_app!(apigen =>
         (version: "1.0")

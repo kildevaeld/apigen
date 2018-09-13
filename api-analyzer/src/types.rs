@@ -18,7 +18,7 @@ use passes::import;
 //     }
 // }
 
-pub trait Pass {
+pub trait Pass: Sync {
     fn execute(
         &self,
         ast: &ModuleExpression,

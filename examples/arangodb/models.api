@@ -12,3 +12,10 @@ record User {
     extra map
     array string[]
 }
+
+record Other {
+    test {
+        rapper string?
+        extra string[]
+    }
+}

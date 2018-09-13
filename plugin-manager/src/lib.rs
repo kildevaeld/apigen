@@ -16,7 +16,7 @@ extern crate error_chain;
 pub mod error;
 mod plugin_manager;
 
-pub use plugin_manager::{Plugin, PluginManager};
+pub use plugin_manager::{Plugin, PluginManager, PluginManager2};
 
 #[cfg(test)]
 mod tests {

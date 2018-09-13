@@ -15,7 +15,10 @@ pub fn default_passes() -> Vec<Box<dyn Pass>> {
     ]
 }
 
-pub fn analyze_file(file: &str, passes: &Vec<Box<dyn Pass>>) -> Result<ModuleExpression> {
+pub fn analyze_file<T: AsRef<Path>>(
+    file: T,
+    passes: &Vec<Box<dyn Pass>>,
+) -> Result<ModuleExpression> {
     let resolve_file = fs::canonicalize(file)?;
 
     let data = read_file(resolve_file.to_str().unwrap())?;
