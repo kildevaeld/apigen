@@ -3,15 +3,16 @@ use bytes::Bytes;
 
 use code_generator::CodeGenerator;
 use error::Result;
-use plugin_manager::{Plugin, PluginManager};
+//use plugins::{Plugin, PluginManager};
+
 use std::path::{Path, PathBuf};
 use std::str;
 use uuid::Uuid;
 pub struct CodeGeneratorPluginBuilder {}
 
-pub trait CodeGeneratorPlugin {
-    fn register(&self, builder: &mut CodeGeneratorPluginBuilder) -> Result<()>;
-}
+// pub trait CodeGeneratorPlugin: Plugin {
+//     fn register(&self, builder: &mut CodeGeneratorPluginBuilder) -> Result<()>;
+// }
 
 pub struct Artifact {
     pub path: PathBuf,
@@ -51,7 +52,7 @@ pub struct RepositoryEntry {
 }
 
 pub struct Repository {
-    plugins: PluginManager,
+    //plugins: PluginManager,
     generators: Vec<RepositoryEntry>,
 }
 
@@ -59,7 +60,7 @@ impl Repository {
     pub fn new() -> Repository {
         Repository {
             generators: Vec::new(),
-            plugins: PluginManager::new(),
+            //plugins: PluginManager::new(),
         }
     }
 
@@ -74,7 +75,7 @@ impl Repository {
 
     pub fn add_from_path(&mut self, filename: &str) {
         unsafe {
-            self.plugins.load_plugin(filename);
+            //self.plugins.load_plugin(filename);
         }
     }
 

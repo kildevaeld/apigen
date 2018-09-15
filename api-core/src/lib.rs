@@ -1,17 +1,15 @@
 extern crate api_analyzer;
+extern crate api_codegen;
+extern crate api_extensions;
 extern crate api_parser;
-extern crate bytes;
-extern crate uuid;
 #[macro_use]
 extern crate error_chain;
-extern crate rayon;
 
-mod code_generator;
+mod core;
 mod error;
 mod repository;
-//pub mod unit;
-pub use code_generator::*;
-pub use error::*;
+
+pub use core::*;
 pub use repository::*;
 
 #[cfg(test)]

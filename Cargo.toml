@@ -4,9 +4,9 @@ members = [
     "api-parser",
     "api-analyzer",
     "api-codegen",
+    "api-core",
     "api-codegen-rust",
     "api-rust-helpers",
-    
-    "plugin-manager",
+    "api-extensions",
     "apigen"
 ]

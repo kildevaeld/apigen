@@ -1,15 +1,10 @@
 [package]
-name = "apigen"
+name = "api-extensions"
 version = "0.1.0"
 authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 
 [dependencies]
-api-parser = { path = "../api-parser", version = "*" }
 api-analyzer = { path = "../api-analyzer", version = "*" }
 api-codegen = { path = "../api-codegen", version = "*" }
-api-codegen-rust = { path = "../api-codegen-rust", version = "*" }
-serde_json = "1.0"
-clap = "~2.32"
+plugins = { git = "https://github.com/kildevaeld/rust-plugins", branch = "master" }
 error-chain = "~0.12.0"
-log = "0.4.0"
-env_logger = "0.5.13"

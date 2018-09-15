@@ -1,5 +1,5 @@
 [package]
-name = "apigen"
+name = "api-core"
 version = "0.1.0"
 authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 
@@ -7,9 +7,5 @@ authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 api-parser = { path = "../api-parser", version = "*" }
 api-analyzer = { path = "../api-analyzer", version = "*" }
 api-codegen = { path = "../api-codegen", version = "*" }
-api-codegen-rust = { path = "../api-codegen-rust", version = "*" }
-serde_json = "1.0"
-clap = "~2.32"
+api-extensions = { path = "../api-extensions", version = "*" }
 error-chain = "~0.12.0"
-log = "0.4.0"
-env_logger = "0.5.13"

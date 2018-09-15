@@ -17,9 +17,9 @@ error_chain!{
     }
 
     errors {
-        Resolve(path: String) {
-            description("could not resolve path")
-            display("unable to resolve path {}", path)
+        Pass(name: String) {
+            description("pass not found")
+            display("unable to resolve path {}", name)
         }
     }
 }

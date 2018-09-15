@@ -5,7 +5,6 @@ extern crate api_codegen_rust;
 extern crate serde_json;
 #[macro_use]
 extern crate clap;
-extern crate plugin_manager;
 #[macro_use]
 extern crate error_chain;
 
