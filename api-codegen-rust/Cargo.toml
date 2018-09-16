@@ -7,6 +7,7 @@ authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 api-parser = { path = "../api-parser", version = "*" }
 api-codegen = { path = "../api-codegen", version = "*" }
 api-analyzer = { path = "../api-analyzer", version = "*" }
+api-extensions = { path = "../api-extensions", version = "*" }
 bytes = { version = "0.4", features = ["serde"] }
 handlebars = "1.0.3"
 serde = "1.0"

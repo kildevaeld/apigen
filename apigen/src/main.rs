@@ -2,6 +2,7 @@ extern crate api_parser;
 extern crate api_analyzer;
 extern crate api_codegen;
 extern crate api_codegen_rust;
+extern crate api_core;
 extern crate serde_json;
 #[macro_use]
 extern crate clap;
@@ -37,7 +38,7 @@ fn main() -> error::Result<()> {
         )
         (@subcommand gen => 
             (@arg input: * "Input file")
-            (@arg analyze: -g <plugin> "analyze")
+            (@arg generator: -g <plugin> "generator")
             (@arg output: -o [directory] "output")
         )
     ).get_matches();

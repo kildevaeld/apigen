@@ -2,6 +2,7 @@
 extern crate serde_derive;
 extern crate api_analyzer;
 extern crate api_codegen;
+extern crate api_extensions;
 extern crate api_parser;
 extern crate bytes;
 extern crate handlebars;
@@ -15,6 +16,23 @@ mod visitor;
 
 pub use code_generator::RustCodeGenerator;
 pub use rust_pass::{rust, RustPass};
+
+#[derive(Default, Debug)]
+pub struct RustPlugin;
+
+impl api_extensions::Extension for RustPlugin {
+    fn name(&self) -> &'static str {
+        "Rust"
+    }
+
+    fn passes(&self) -> Option<Vec<Box<dyn api_analyzer::Pass>>> {
+        Some(vec![Box::new(RustPass::new())])
+    }
+
+    fn generator(&self) -> Option<Box<dyn api_codegen::CodeGenerator>> {
+        Some(Box::new(RustCodeGenerator::new()))
+    }
+}
 
 // #[derive(Default, Debug)]
 // pub struct RustPlugin {}

@@ -4,32 +4,33 @@ pub extern crate plugins;
 extern crate error_chain;
 extern crate api_analyzer;
 extern crate api_codegen;
-use plugins::ResultExt;
 
-pub mod error {
-    error_chain!{}
+mod error;
+
+pub use error::*;
+pub use plugins::PluginManager;
+
+pub trait Extension {
+    fn name(&self) -> &'static str;
+    fn passes(&self) -> Option<Vec<Box<dyn api_analyzer::Pass>>>;
+    fn generator(&self) -> Option<Box<dyn api_codegen::CodeGenerator>>;
 }
 
-pub trait ExtensionBuilder {
-    fn register_pass(
-        &mut self,
-        name: &str,
-        pass: Fn() -> Vec<Box<dyn api_analyzer::Pass>>,
-    ) -> &mut ExtensionBuilder;
-    fn register_codegen(
-        &mut self,
-        name: &str,
-        pass: Box<dyn api_codegen::CodeGenerator>,
-    ) -> &mut ExtensionBuilder;
-}
+build_plugin_manager!(Extension, ExtensionManager);
 
-use error::Result;
-plugin_manager!{
-    manager_name = Extensions;
-    pub trait Extension {
-        fn name(&self) -> Result<&'static str>;
-        fn register(&self, builder: &mut ExtensionBuilder) -> Result<()>;
-    }
+#[macro_export]
+macro_rules! declare_extension {
+    ($plugin_type:ty, $constructor:path) => {
+        #[no_mangle]
+        pub extern "C" fn _plugin_create() -> *mut Extension {
+            // make sure the constructor is the correct type.
+            let constructor: fn() -> $plugin_type = $constructor;
+
+            let object = constructor();
+            let boxed: Box<$plugin_trait> = Box::new(object);
+            Box::into_raw(boxed)
+        }
+    };
 }
 
 #[cfg(test)]

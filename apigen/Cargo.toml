@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 
 [dependencies]
+api-core = { path = "../api-core", version = "*" }
 api-parser = { path = "../api-parser", version = "*" }
 api-analyzer = { path = "../api-analyzer", version = "*" }
 api-codegen = { path = "../api-codegen", version = "*" }

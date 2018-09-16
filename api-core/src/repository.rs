@@ -1,10 +1,12 @@
 use api_analyzer;
 use api_codegen;
 use api_extensions::plugins::PluginManager;
-use api_extensions::{Extension, ExtensionBuilder, Extensions};
+use api_extensions::{Extension, ExtensionManager};
 use error::Result;
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+
 #[derive(Default)]
 pub struct RepositoryBuilder {
     search_paths: Vec<PathBuf>,
@@ -18,34 +20,22 @@ impl RepositoryBuilder {
 
     pub fn build(self) -> Repository {
         Repository {
-            plugins: Extensions::new(),
+            plugins: ExtensionManager::new(),
             search_paths: self.search_paths,
             loaded: false,
         }
     }
 }
 
-struct PluginBuilder {}
+type PassesFactory = Box<Fn() -> Vec<Box<dyn api_analyzer::Pass>>>;
 
-impl ExtensionBuilder for PluginBuilder {
-    fn register_pass(
-        &mut self,
-        name: &str,
-        pass: Fn() -> Vec<Box<dyn api_analyzer::Pass>>,
-    ) -> &mut ExtensionBuilder {
-        self
-    }
-    fn register_codegen(
-        &mut self,
-        name: &str,
-        pass: Box<dyn api_codegen::CodeGenerator>,
-    ) -> &mut ExtensionBuilder {
-        self
-    }
+#[derive(Default)]
+struct PluginBuilder {
+    factories: HashMap<String, PassesFactory>,
 }
 
 pub struct Repository {
-    plugins: Extensions,
+    plugins: ExtensionManager,
     search_paths: Vec<PathBuf>,
     loaded: bool,
 }
@@ -65,10 +55,15 @@ impl Repository {
 
             for file in files {
                 let path = file?.path();
-                self.plugins.load_plugin(&path);
+                self.plugins.load_plugin(&path)?;
             }
         }
         Ok(())
+    }
+
+    pub fn add_plugin(&mut self, plugin: Box<dyn Extension>) -> &Box<dyn Extension> {
+        let e = self.plugins.add_plugin(plugin);
+        e.instance()
     }
 
     pub fn list(&self) -> Vec<&Box<dyn Extension>> {

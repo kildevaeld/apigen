@@ -11,7 +11,7 @@ pub struct PackagePair(pub ModuleExpression, pub Vec<Artifact>);
 pub type Package = Vec<PackagePair>;
 use api_analyzer::{analyze_file, Pass};
 
-pub trait CodeGenerator {
+pub trait CodeGenerator: Sync {
     fn transform(&self, ast: &ModuleExpression) -> Result<Vec<Artifact>>;
     fn augment_package(
         &self,
@@ -54,7 +54,7 @@ pub fn transform_package<T, G>(
 ) -> Result<Vec<Artifact>>
 where
     T: AsRef<Path>,
-    G: CodeGenerator + Sync,
+    G: CodeGenerator,
 {
     let path = path.as_ref();
     let resolved_path: PathBuf;
@@ -85,6 +85,58 @@ where
         .collect::<Result<Vec<PackagePair>>>()?;
 
     let mut modules: Vec<ModuleExpression> = (&results).into_iter().map(|m| m.0.clone()).collect();
+    let mut artifacts: Vec<Artifact> = results.into_iter().flat_map(|m| m.1).collect();
+
+    let path_string = format!("{}/", resolved_path.to_str().unwrap());
+
+    artifacts = generator.augment_package(&resolved_path, &modules, artifacts)?;
+
+    Ok(artifacts
+        .into_iter()
+        .map(|mut m| {
+            m.path = PathBuf::from(m.path.to_str().unwrap().replace(&path_string, ""));
+            m
+        })
+        .collect::<Vec<Artifact>>())
+}
+
+pub fn transform_package_boxed<T>(
+    path: T,
+    generator: &Box<dyn CodeGenerator>,
+    passes: &Vec<Box<dyn Pass>>,
+) -> Result<Vec<Artifact>>
+where
+    T: AsRef<Path>,
+{
+    let path = path.as_ref();
+    let resolved_path: PathBuf;
+
+    if !path.is_absolute() {
+        resolved_path = canonicalize(path)?;
+    } else {
+        resolved_path = path.to_path_buf();
+    }
+
+    let files = visit_dirs(&resolved_path, "api")?;
+
+    // Analyze and transform in parallel
+    let results: Vec<_> = files
+        .par_iter()
+        .map(|ref file| {
+            let path = file.path();
+            Ok(analyze_file(&path, passes)?)
+        })
+        .map(|m: Result<ModuleExpression>| -> Result<PackagePair> {
+            if !m.is_ok() {
+                return Err(m.err().unwrap());
+            }
+            let m = m.unwrap();
+            let artifacts = generator.transform(&m)?;
+            Ok(PackagePair(m, artifacts))
+        })
+        .collect::<Result<Vec<PackagePair>>>()?;
+
+    let modules: Vec<ModuleExpression> = (&results).into_iter().map(|m| m.0.clone()).collect();
     let mut artifacts: Vec<Artifact> = results.into_iter().flat_map(|m| m.1).collect();
 
     let path_string = format!("{}/", resolved_path.to_str().unwrap());

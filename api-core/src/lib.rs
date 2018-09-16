@@ -7,9 +7,12 @@ extern crate error_chain;
 
 mod core;
 mod error;
+mod generator;
 mod repository;
 
 pub use core::*;
+pub use error::*;
+pub use generator::*;
 pub use repository::*;
 
 #[cfg(test)]

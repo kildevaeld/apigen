@@ -1,5 +1,6 @@
 use api_analyzer;
 use api_codegen;
+use api_extensions;
 use api_parser;
 //use plugin_manager;
 use std::io;
@@ -13,6 +14,7 @@ error_chain!{
 
     links {
         Codegen(api_codegen::Error, api_codegen::ErrorKind);
+        Plugin(api_extensions::plugins::Error, api_extensions::plugins::ErrorKind);
 
     }
 
