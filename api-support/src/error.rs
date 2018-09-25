@@ -1,24 +1,25 @@
-use http::uri::InvalidUri;
-use hyper;
+use reqwest;
 use serde_json;
 use std::result;
+use url;
 
+#[derive(Debug)]
 pub enum Error {
-    Http(hyper::Error),
+    Http(reqwest::Error),
     Json(serde_json::Error),
     Format(String),
     Client(u16, String),
     InvalidUrl,
 }
 
-impl From<hyper::Error> for Error {
-    fn from(err: hyper::Error) -> Error {
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Error {
         Error::Http(err)
     }
 }
 
-impl From<InvalidUri> for Error {
-    fn from(err: InvalidUri) -> Error {
+impl From<url::ParseError> for Error {
+    fn from(err: url::ParseError) -> Error {
         Error::InvalidUrl
     }
 }

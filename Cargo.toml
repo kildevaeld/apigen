@@ -6,7 +6,7 @@ members = [
     "api-codegen",
     "api-core",
     "api-codegen-rust",
-    "api-rust-helpers",
+    "api-support",
     "api-extensions",
     "apigen"
 ]

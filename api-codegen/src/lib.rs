@@ -5,6 +5,8 @@ extern crate uuid;
 #[macro_use]
 extern crate error_chain;
 extern crate rayon;
+#[macro_use]
+extern crate log;
 
 mod code_generator;
 mod error;

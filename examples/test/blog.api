@@ -1,0 +1,19 @@
+
+import ./models.api
+
+
+get /blog {
+    returns {
+        200 Blog[]
+    }
+}
+
+post /blog {
+    returns {
+        200 Blog
+    }
+    body {
+        title string
+        body string
+    }
+}

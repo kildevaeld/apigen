@@ -2,6 +2,8 @@ extern crate api_parser;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
+#[macro_use]
+extern crate log;
 
 mod analyze;
 mod common;

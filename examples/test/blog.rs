@@ -7,24 +7,19 @@ use std::mem;
 use api_support::error;
 use api_support::utils;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
-pub struct 400Rest {
-  test: String
-}
 
-
-pub struct Test {
+pub struct Blog {
     client: Client,
     endpoint: String,
 }
 
-impl Test {
-    pub fn new(endpoint: &str) -> Test {
-        Test::with_client(Client::new(), endpoint)
+impl Blog {
+    pub fn new(endpoint: &str) -> Blog {
+        Blog::with_client(Client::new(), endpoint)
     }
 
-    pub fn with_client(client: Client, endpoint: &str) -> Test {
-        Test{
+    pub fn with_client(client: Client, endpoint: &str) -> Blog {
+        Blog{
             client: client,
             endpoint: String::from(endpoint),
         }
@@ -32,10 +27,46 @@ impl Test {
     
       
   
-  pub fn test_mig_ioret_ost(&self, mig_ioret: &str, body: ) -> impl Future<Item=Test<String>, Error=error::Error> {
+  pub fn blog(&self, ) -> impl Future<Item=, Error=error::Error> {
   
-      let url = utils::join(&self.endpoint, &["test", mig_ioret, "ost"])?;
+      let url = utils::join(&self.endpoint, &["blog"])?;
       let mut request = client.request(Method::GET, url);
+      
+      
+      request = request.header(CONTENT_TYPE, "application/json");
+  
+      self.request(request)
+  
+      /*self.client
+          .execute(request.build().unwrap())
+          .from_err::<error::Error>()
+          .and_then(|mut res| {
+              let status = res.status().as_u16();
+              let body = mem::replace(res.body_mut(), Decoder::empty());
+  
+              let mime = res
+                  .headers()
+                  .get(CONTENT_TYPE)
+                  .and_then(|ct| ct.to_str().ok())
+                  .unwrap_or("application/json")
+                  .to_string();
+  
+              body.concat2()
+                  .from_err::<error::Error>()
+                  .and_then(move |b| {
+                      Ok(utils::decode::<>(&mime, &b)?)
+                  })
+                  
+          })
+          .from_err()*/
+  }
+    
+      
+  
+  pub fn blog(&self, body: Anonym) -> impl Future<Item=, Error=error::Error> {
+  
+      let url = utils::join(&self.endpoint, &["blog"])?;
+      let mut request = client.request(Method::POST, url);
       
       
       let body_data = utils::encode("application/json", body)?;
@@ -62,7 +93,7 @@ impl Test {
               body.concat2()
                   .from_err::<error::Error>()
                   .and_then(move |b| {
-                      Ok(utils::decode::<Test<String>>(&mime, &b)?)
+                      Ok(utils::decode::<>(&mime, &b)?)
                   })
                   
           })

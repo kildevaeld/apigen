@@ -7,3 +7,4 @@ authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 api-parser = { path = "../api-parser", version = "*" }
 serde = "1.0"
 serde_derive = "1.0"
+log = "0.4.0"

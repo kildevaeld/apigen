@@ -4,6 +4,8 @@ extern crate api_extensions;
 extern crate api_parser;
 #[macro_use]
 extern crate error_chain;
+#[macro_use]
+extern crate log;
 
 mod core;
 mod error;

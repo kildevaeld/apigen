@@ -3,6 +3,7 @@ use api_analyzer::Result;
 use api_parser::expressions::*;
 use heck::CamelCase;
 
+#[derive(Debug)]
 pub struct RustPass;
 
 impl RustPass {
@@ -55,8 +56,7 @@ impl RustPass {
                     .into_iter()
                     .map(|ref mut m| {
                         self.resolve_type(m, pname, &format!("{}_{}", prop, &name), out)
-                    })
-                    .collect();
+                    }).collect();
 
                 Type::Generic(clone)
             }
@@ -103,12 +103,16 @@ impl RustPass {
 
     fn visit_endpoint(&self, record: &mut HttpEndpointExpression) -> Option<Vec<RecordExpression>> {
         let mut out: Vec<RecordExpression> = vec![];
+
         for p in &mut record.properties {
             match p {
                 HttpEndpointPropertyExpression::Returns(returns) => {
                     for r in returns {
                         r.value = self.resolve_type(&mut r.value, "", &r.name, &mut out);
                     }
+                }
+                HttpEndpointPropertyExpression::Body(body) => {
+                    *body = self.resolve_type(body, "", "Body", &mut out);
                 }
                 _ => {}
             };
@@ -138,8 +142,7 @@ impl Pass for RustPass {
                 Expression::Record(r) => self.visit_record(r),
                 Expression::HttpEndpoint(r) => self.visit_endpoint(r),
                 _ => None,
-            })
-            .flatten()
+            }).flatten()
             .map(|m| Expression::Record(m))
             .collect();
 

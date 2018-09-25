@@ -6,6 +6,7 @@ pub struct GeneratorBuilder {
     pub(crate) dest: Option<PathBuf>,
     pub(crate) name: String,
     pub(crate) source: PathBuf,
+    pub(crate) force: bool,
     pub(crate) passes: PassList,
 }
 
@@ -16,6 +17,7 @@ impl GeneratorBuilder {
             name: name.as_ref().to_string(),
             dest: None,
             passes: vec![],
+            force: false,
         }
     }
 
@@ -36,6 +38,11 @@ impl GeneratorBuilder {
 
     pub fn passes(&mut self, dest: PassList) -> &mut Self {
         self.passes = dest;
+        self
+    }
+
+    pub fn force(&mut self, force: bool) -> &mut Self {
+        self.force = force;
         self
     }
 }

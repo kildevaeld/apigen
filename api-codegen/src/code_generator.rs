@@ -73,16 +73,14 @@ where
         .map(|ref file| {
             let path = file.path();
             Ok(analyze_file(&path, passes)?)
-        })
-        .map(|m: Result<ModuleExpression>| -> Result<PackagePair> {
+        }).map(|m: Result<ModuleExpression>| -> Result<PackagePair> {
             if !m.is_ok() {
                 return Err(m.err().unwrap());
             }
             let m = m.unwrap();
             let artifacts = generator.transform(&m)?;
             Ok(PackagePair(m, artifacts))
-        })
-        .collect::<Result<Vec<PackagePair>>>()?;
+        }).collect::<Result<Vec<PackagePair>>>()?;
 
     let mut modules: Vec<ModuleExpression> = (&results).into_iter().map(|m| m.0.clone()).collect();
     let mut artifacts: Vec<Artifact> = results.into_iter().flat_map(|m| m.1).collect();
@@ -96,8 +94,7 @@ where
         .map(|mut m| {
             m.path = PathBuf::from(m.path.to_str().unwrap().replace(&path_string, ""));
             m
-        })
-        .collect::<Vec<Artifact>>())
+        }).collect::<Vec<Artifact>>())
 }
 
 pub fn transform_package_boxed<T>(
@@ -116,25 +113,21 @@ where
     } else {
         resolved_path = path.to_path_buf();
     }
-
+    info!("resolved path {:?} => {:?}", path, resolved_path);
     let files = visit_dirs(&resolved_path, "api")?;
 
+    info!("found {} files", files.len());
     // Analyze and transform in parallel
     let results: Vec<_> = files
         .par_iter()
         .map(|ref file| {
             let path = file.path();
-            Ok(analyze_file(&path, passes)?)
-        })
-        .map(|m: Result<ModuleExpression>| -> Result<PackagePair> {
-            if !m.is_ok() {
-                return Err(m.err().unwrap());
-            }
-            let m = m.unwrap();
+            info!("analyze file {:?}", path);
+            let m = analyze_file(&path, passes)?;
+            info!("transform file {:?}", m.path);
             let artifacts = generator.transform(&m)?;
             Ok(PackagePair(m, artifacts))
-        })
-        .collect::<Result<Vec<PackagePair>>>()?;
+        }).collect::<Result<Vec<PackagePair>>>()?;
 
     let modules: Vec<ModuleExpression> = (&results).into_iter().map(|m| m.0.clone()).collect();
     let mut artifacts: Vec<Artifact> = results.into_iter().flat_map(|m| m.1).collect();
@@ -148,8 +141,7 @@ where
         .map(|mut m| {
             m.path = PathBuf::from(m.path.to_str().unwrap().replace(&path_string, ""));
             m
-        })
-        .collect::<Vec<Artifact>>())
+        }).collect::<Vec<Artifact>>())
 }
 
 pub fn ensure_path<T: AsRef<Path>>(path: T) -> Result<()> {

@@ -14,6 +14,8 @@ enum Type<'a> {
     Enum(&'a EnumExpression),
 }
 
+#[derive(Debug)]
+
 pub struct TypeValidator;
 
 impl TypeValidator {

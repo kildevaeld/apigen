@@ -9,3 +9,4 @@ api-analyzer = { path = "../api-analyzer", version = "*" }
 api-codegen = { path = "../api-codegen", version = "*" }
 api-extensions = { path = "../api-extensions", version = "*" }
 error-chain = "~0.12.0"
+log = "0.4.0"

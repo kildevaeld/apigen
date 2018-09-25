@@ -66,20 +66,23 @@ impl Core {
         Err(ErrorKind::Pass(format!("could not find {}", name)).into())
     }
 
-    pub fn gen_code(&self, mut builder: GeneratorBuilder) -> Result<ModuleExpression> {
+    pub fn gen_code(&self, mut builder: GeneratorBuilder) -> Result<()> {
         // let name = name.as_ref();
 
         let found = match self
             .repo
             .list()
             .into_iter()
-            .find(|m| m.name() == builder.name)
+            .find(|m| m.name() == builder.name.as_str())
         {
             Some(found) => found,
             None => return Err(ErrorKind::Pass(format!("could not find {}", builder.name)).into()),
         };
 
+        info!("found plugin {}", found.name());
+
         if let Some(mut fpass) = found.passes() {
+            debug!("found {} passes on plugin", fpass.len());
             builder.passes.append(&mut fpass);
         }
 
@@ -95,6 +98,7 @@ impl Core {
             artifacts = transform_package_boxed(&builder.source, &generator, &builder.passes)?
         } else {
             let ast = analyze_file(&builder.source, &builder.passes)?;
+
             artifacts = generator.transform(&ast)?;
         }
 
@@ -102,6 +106,6 @@ impl Core {
             write_package(&artifacts, &dest)?;
         }
 
-        Err(ErrorKind::Pass(format!("could not find {}", builder.name)).into())
+        Ok(())
     }
 }

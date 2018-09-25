@@ -1,14 +1,15 @@
 [package]
-name = "package"
-version = "0.0.1"
-authors = [""]
+name = "api-support"
+version = "0.1.0"
+authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 
 [dependencies]
 reqwest = { git = "https://github.com/seanmonstar/reqwest.git", branch = "master"}
 serde_json = "1.0"
 serde = "1.0"
+http = "0.1"
 serde_derive = "1.0"
 futures = "*"
 url = "1.7.1"
 tokio = "0.1.8"
-
+error-chain = "~0.12.0"

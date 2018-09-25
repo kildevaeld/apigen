@@ -9,12 +9,12 @@ use std::boxed::Box;
 pub fn gen_cmd(args: &ArgMatches) -> Result<()> {
     let input = args.value_of("input").unwrap();
 
-    let mut core = Core::new().search_path("targets/debug").build();
+    let mut core = Core::new().search_path("target/debug").build();
 
     core.repository_mut()
         .add_plugin(Box::new(RustPlugin::default()));
 
-    core.repository_mut().load()?;
+    //core.repository_mut().load()?;
 
     let gen_name = args.value_of("generator").unwrap();
 

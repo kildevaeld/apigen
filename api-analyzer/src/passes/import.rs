@@ -4,6 +4,7 @@ use error::{AnalyzerError, Result};
 use std::path::Path;
 use types::Pass;
 
+#[derive(Debug)]
 pub struct Import;
 
 impl Import {

@@ -55,7 +55,12 @@ impl Repository {
 
             for file in files {
                 let path = file?.path();
-                self.plugins.load_plugin(&path)?;
+                match self.plugins.load_plugin(&path) {
+                    _ => {}
+                    Ok(_) => {
+                        info!("loaded plugin {:?}", path);
+                    }
+                };
             }
         }
         Ok(())
@@ -63,14 +68,14 @@ impl Repository {
 
     pub fn add_plugin(&mut self, plugin: Box<dyn Extension>) -> &Box<dyn Extension> {
         let e = self.plugins.add_plugin(plugin);
-        e.instance()
+        e.instance().unwrap()
     }
 
     pub fn list(&self) -> Vec<&Box<dyn Extension>> {
         self.plugins
             .plugins()
             .iter()
-            .map(|m| m.instance())
+            .map(|m| m.instance().unwrap())
             .collect()
     }
 }

@@ -36,6 +36,7 @@ pub fn analyze<T: AsRef<Path>>(
     file.path = file_name.as_ref().to_path_buf();
 
     for pass in passes {
+        info!("executing pass {:?}", pass);
         file = pass.execute(&file, passes)?;
     }
 

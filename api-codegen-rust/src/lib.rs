@@ -2,6 +2,7 @@
 extern crate serde_derive;
 extern crate api_analyzer;
 extern crate api_codegen;
+#[macro_use]
 extern crate api_extensions;
 extern crate api_parser;
 extern crate bytes;
@@ -9,6 +10,9 @@ extern crate handlebars;
 extern crate heck;
 extern crate rayon;
 extern crate serde;
+#[macro_use]
+extern crate log;
+
 mod code_generator;
 mod rust_pass;
 mod template;
@@ -33,6 +37,8 @@ impl api_extensions::Extension for RustPlugin {
         Some(Box::new(RustCodeGenerator::new()))
     }
 }
+
+declare_extension!(RustPlugin, RustPlugin::default);
 
 // #[derive(Default, Debug)]
 // pub struct RustPlugin {}
