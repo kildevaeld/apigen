@@ -32,6 +32,7 @@ pub enum Builtin {
     Bytes,
     Bool,
     Map,
+    Date,
     Void,
 }
 
@@ -54,8 +55,7 @@ impl ModuleExpression {
                 Expression::GenericRecord(e) => Some(UserType::GenericRecord(&e)),
                 Expression::Record(e) => Some(UserType::Record(&e)),
                 _ => None,
-            })
-            .collect()
+            }).collect()
     }
 }
 

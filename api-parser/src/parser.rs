@@ -231,6 +231,7 @@ fn parse_builtin_type(input: &str) -> Type {
         "bytes" => Builtin::Bytes,
         "bool" => Builtin::Bool,
         "map" => Builtin::Map,
+        "date" => Builtin::Date,
         _ => Builtin::Void,
     };
     Type::Builtin(t)
@@ -415,9 +416,13 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
                         &inner,
                     )));
             }
-            Rule::http_endpoint_description => endpoint.properties.push(
-                HttpEndpointPropertyExpression::Description(span.as_str().trim().to_string()),
-            ),
+            Rule::http_endpoint_description => {
+                endpoint
+                    .properties
+                    .push(HttpEndpointPropertyExpression::Description(
+                        span.as_str().trim().to_string(),
+                    ))
+            }
             _ => {}
         };
     }

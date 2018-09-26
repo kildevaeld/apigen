@@ -143,7 +143,7 @@ type_builtins = {
     "uint8" | "uint16" | "uint32" | "uint64" |
     "float" | "double" |
     "string" | "bytes" |
-    "bool" | "map"
+    "bool" | "map" | "date"
 }
 
 // Annotation
