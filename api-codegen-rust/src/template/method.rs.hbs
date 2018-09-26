@@ -2,7 +2,7 @@
 {{#if arguments }}
 pub fn {{method_name}}(&self, {{{arguments}}}) -> impl Future<Item={{{method_return}}}, Error=error::Error> {
 {{else}}
-pub fn {{method_name}}(&self, ) -> impl Future<Item={{{method_return}}}, Error=error::Error> {
+pub fn {{method_name}}(&self) -> impl Future<Item={{{method_return}}}, Error=error::Error> {
 {{/if }}
     let url = utils::join(&self.endpoint, &[{{{http_paths}}}])?;
     let mut request = client.request({{http_method}}, url);

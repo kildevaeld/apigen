@@ -30,7 +30,7 @@ impl {{module_name}} {
     {{{this}}}
     {{/each}}
 
-    fn request<T: Serializable + ?Size>(request: Request) -> impl Future<Item=T, Error=error::Error> {
+    fn request<T: Serializable + ?Sized>(&self, request: Request) -> impl Future<Item=T, Error=error::Error> {
         self.client
         .execute(request.build().unwrap())
         .from_err::<error::Error>()
