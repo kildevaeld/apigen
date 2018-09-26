@@ -1,19 +1,22 @@
 
 import ./models.api
 
-
 get /blog {
-    returns {
-        200 Blog[]
-    }
+    returns Blog[]
 }
 
 post /blog {
-    returns {
-        200 Blog
-    }
+    returns Blog
     body {
         title string
         body string
     }
+}
+
+get /blog/:id { returns Blog? }
+
+put /blog/:id { body Blog }
+
+delete /blog/:id { 
+    returns void
 }
