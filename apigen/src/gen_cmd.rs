@@ -1,5 +1,3 @@
-use api_analyzer::default_passes;
-use api_codegen::{transform_package, write_package};
 use api_codegen_rust::RustPlugin;
 use api_core::{Core, GeneratorBuilder};
 use clap::ArgMatches;

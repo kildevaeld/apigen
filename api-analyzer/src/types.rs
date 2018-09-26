@@ -1,6 +1,5 @@
-use api_parser::expressions::{Expression, ModuleExpression};
+use api_parser::expressions::ModuleExpression;
 use error::Result;
-use passes::import;
 use std::fmt::Debug;
 
 pub trait Pass: Sync + Debug {

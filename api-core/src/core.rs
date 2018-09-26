@@ -1,5 +1,5 @@
 use api_analyzer::{analyze_file, default_passes, Pass};
-use api_codegen::{transform_package_boxed, write_package, Artifact, CodeGenerator, Package};
+use api_codegen::{transform_package_boxed, write_package, Artifact};
 use api_parser::expressions::ModuleExpression;
 use error::{ErrorKind, Result};
 use generator::GeneratorBuilder;

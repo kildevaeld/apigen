@@ -138,7 +138,8 @@ fn parse_json_object(input: &Pair) -> JSONExpression {
     }
 }
 
-fn parse_json_array(input: &Pair) {}
+//fn parse_json_array(input: &Pair) {}
+
 fn parse_json_value(input: &Pair) -> JSONExpression {
     for pair in input.clone().into_inner() {
         let exp = match pair.as_rule() {
@@ -170,28 +171,6 @@ fn parse_enum(input: &Pair) -> EnumExpression {
 
     e
 }
-
-// fn parse_type(input: &str) -> TypeExpression {
-//     TypeExpression {
-//         optional: false,
-//         value: match input {
-//             "int64" => Type::Int64,
-//             "int32" => Type::Int32,
-//             "int16" => Type::Int16,
-//             "int8" => Type::Int8,
-//             "uint64" => Type::Uint64,
-//             "uint32" => Type::Uint32,
-//             "uint16" => Type::Uint16,
-//             "uint8" => Type::Uint8,
-//             "float" => Type::Float,
-//             "double" => Type::Double,
-//             "string" => Type::String,
-//             "bytes" => Type::Bytes,
-//             "bool" => Type::Bool,
-//             _ => Type::User(String::from(input)),
-//         },
-//     }
-// }
 
 fn parse_generic_type(input: &Pair) -> Type {
     let mut types = vec![];
@@ -359,31 +338,31 @@ fn parse_http_endpoint_path(input: &Pair) -> Vec<HttpEndpointPathExpression> {
     out
 }
 
-fn parse_http_endpoint_returns(input: &Pair) -> Vec<HttpEndpointReturnsExpression> {
-    let span = input.clone().into_span();
+// fn parse_http_endpoint_returns(input: &Pair) -> Vec<HttpEndpointReturnsExpression> {
+//     let span = input.clone().into_span();
 
-    let mut returns = HttpEndpointReturnsExpression {
-        name: String::from(""),
-        location: Location(span.start(), span.end()),
-        value: TypeExpression::Required(Type::Builtin(Builtin::Void)),
-    };
+//     let mut returns = HttpEndpointReturnsExpression {
+//         name: String::from(""),
+//         location: Location(span.start(), span.end()),
+//         value: TypeExpression::Required(Type::Builtin(Builtin::Void)),
+//     };
 
-    let mut output = vec![];
+//     let mut output = vec![];
 
-    for pair in input.clone().into_inner() {
-        let span = pair.clone().into_span();
-        match pair.as_rule() {
-            Rule::http_status_code => returns.name = String::from(span.as_str()),
-            Rule::generic_type | Rule::anonymous_record_type => {
-                returns.value = parse_all_type_exp(&pair);
-                output.push(returns.clone());
-            }
-            _ => {}
-        };
-    }
+//     for pair in input.clone().into_inner() {
+//         let span = pair.clone().into_span();
+//         match pair.as_rule() {
+//             Rule::http_status_code => returns.name = String::from(span.as_str()),
+//             Rule::generic_type | Rule::anonymous_record_type => {
+//                 returns.value = parse_all_type_exp(&pair);
+//                 output.push(returns.clone());
+//             }
+//             _ => {}
+//         };
+//     }
 
-    output
-}
+//     output
+// }
 
 fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
     let span = input.clone().into_span();

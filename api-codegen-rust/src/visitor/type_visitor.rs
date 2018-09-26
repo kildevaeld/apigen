@@ -34,7 +34,7 @@ impl TypeExpressionVisitor {
         format!("{}<{}>", exp.name, out.join(", "))
     }
 
-    pub fn visit_anonymous_type(&self, exp: &AnonymousRecordExpression) -> String {
+    pub fn visit_anonymous_type(&self, _exp: &AnonymousRecordExpression) -> String {
         "Anonym".to_string()
     }
 
@@ -44,7 +44,6 @@ impl TypeExpressionVisitor {
             Type::Generic(b) => self.visit_generic(b),
             Type::User(b) => b.clone(),
             Type::Anonymous(b) => self.visit_anonymous_type(b),
-            _ => "".to_string(),
         }
     }
 
@@ -56,11 +55,11 @@ impl TypeExpressionVisitor {
         }
     }
 
-    fn visit_type_expression_with_parent(&self, exp: &TypeExpression) -> String {
-        match exp {
-            TypeExpression::Optional(inner) => format!("Option<{}>", self.visit_type(inner)),
-            TypeExpression::Repeated(inner) => format!("Vec<{}>", self.visit_type(inner)),
-            TypeExpression::Required(inner) => self.visit_type(inner),
-        }
-    }
+    // fn visit_type_expression_with_parent(&self, exp: &TypeExpression) -> String {
+    //     match exp {
+    //         TypeExpression::Optional(inner) => format!("Option<{}>", self.visit_type(inner)),
+    //         TypeExpression::Repeated(inner) => format!("Vec<{}>", self.visit_type(inner)),
+    //         TypeExpression::Required(inner) => self.visit_type(inner),
+    //     }
+    // }
 }

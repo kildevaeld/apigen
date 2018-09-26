@@ -3,6 +3,7 @@ use reqwest::async::{Client, Decoder};
 use reqwest::header::CONTENT_TYPE;
 use reqwest::{Method, Request};
 use std::mem;
+use serde::Serialize;
 
 use api_support::error;
 use api_support::utils;
@@ -30,7 +31,7 @@ impl {{module_name}} {
     {{{this}}}
     {{/each}}
 
-    fn request<T: Serializable + ?Sized>(&self, request: Request) -> impl Future<Item=T, Error=error::Error> {
+    {{!-- fn request<T: Serialize + ?Sized>(&self, request: Request) -> impl Future<Item=T, Error=error::Error> {
         self.client
         .execute(request.build().unwrap())
         .from_err::<error::Error>()
@@ -54,6 +55,6 @@ impl {{module_name}} {
             Err(error::Error::Invalid)
         })
         .from_err()
-    }
+    } --}}
 }
 {{/if}}

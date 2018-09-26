@@ -107,9 +107,7 @@ impl RustPass {
         for p in &mut record.properties {
             match p {
                 HttpEndpointPropertyExpression::Returns(returns) => {
-                    // for r in returns {
-                    //     r.value = self.resolve_type(&mut r.value, "", &r.name, &mut out);
-                    // }
+                    *returns = self.resolve_type(returns, "", "Result", &mut out);
                 }
                 HttpEndpointPropertyExpression::Body(body) => {
                     *body = self.resolve_type(body, "", "Body", &mut out);

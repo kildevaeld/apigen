@@ -1,33 +1,22 @@
 use reqwest;
 use serde_json;
-use std::result;
 use url;
 
-#[derive(Debug)]
-pub enum Error {
-    Http(reqwest::Error),
-    Json(serde_json::Error),
-    Format(String),
-    Client(u16, String),
-    InvalidUrl,
-}
+error_chain!{
+    foreign_links {
+        Http(reqwest::Error);
+        Json(serde_json::Error);
+        Url(url::ParseError);
+    }
 
-impl From<reqwest::Error> for Error {
-    fn from(err: reqwest::Error) -> Error {
-        Error::Http(err)
+    errors {
+        Client(status: u16, msg:String) {
+            description("could not connect")
+            display("could not connect {}: {}", status, msg)
+        }
+        Mime(mime: String) {
+            description("invalid mime type")
+            display("invalid mime type: {}", mime)
+        }
     }
 }
-
-impl From<url::ParseError> for Error {
-    fn from(err: url::ParseError) -> Error {
-        Error::InvalidUrl
-    }
-}
-
-impl From<serde_json::Error> for Error {
-    fn from(err: serde_json::Error) -> Error {
-        Error::Json(err)
-    }
-}
-
-pub type Result<T> = result::Result<T, Error>;

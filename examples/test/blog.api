@@ -15,7 +15,10 @@ post /blog {
 
 get /blog/:id { returns Blog? }
 
-put /blog/:id { body Blog }
+put /blog/:id { 
+    returns Blog
+    body Blog 
+}
 
 delete /blog/:id { 
     returns void

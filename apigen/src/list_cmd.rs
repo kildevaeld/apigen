@@ -1,12 +1,8 @@
-use api_analyzer::default_passes;
-use api_codegen::{transform_package, write_package};
-use api_codegen_rust::RustPlugin;
-use api_core::{Core, GeneratorBuilder};
+use api_core::Core;
 use clap::ArgMatches;
 use error::Result;
-use std::boxed::Box;
 
-pub fn list_cmd(args: &ArgMatches) -> Result<()> {
+pub fn list_cmd(_args: &ArgMatches) -> Result<()> {
     let mut core = Core::new().search_path("target/debug").build();
 
     // core.repository_mut()

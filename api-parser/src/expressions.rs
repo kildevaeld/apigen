@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::string::String;
 
 #[serde(tag = "type", content = "value")]
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
@@ -47,15 +48,38 @@ pub struct ModuleExpression {
 }
 
 impl ModuleExpression {
-    pub fn local_scope<'a>(&'a self) -> Vec<UserType<'a>> {
-        (&self.body)
-            .into_iter()
+    fn build<'a>(&'a self, v: &'a Vec<Expression>) -> Vec<UserType<'a>> {
+        v.into_iter()
             .filter_map(|m| match m {
                 Expression::Enum(e) => Some(UserType::Enum(&e)),
                 Expression::GenericRecord(e) => Some(UserType::GenericRecord(&e)),
                 Expression::Record(e) => Some(UserType::Record(&e)),
                 _ => None,
             }).collect()
+    }
+
+    pub fn local_scope<'a>(&'a self) -> Vec<UserType<'a>> {
+        self.build(&self.body)
+    }
+
+    pub fn imported_scope<'a>(&'a self) -> Vec<UserType<'a>> {
+        let mut out = vec![];
+        for i in &self.imports {
+            let mut v = self.build(&i.body);
+            out.append(&mut v);
+        }
+        out
+    }
+
+    pub fn scope<'a>(&'a self) -> Vec<UserType<'a>> {
+        let mut out = vec![];
+        let mut loc = self.local_scope();
+        let mut imp = self.imported_scope();
+
+        out.append(&mut loc);
+        out.append(&mut imp);
+
+        out
     }
 }
 
@@ -178,6 +202,20 @@ pub struct HttpEndpointExpression {
     pub location: Location,
 }
 
+impl HttpEndpointExpression {
+    pub fn name(&self) -> String {
+        let s = (&self.path)
+            .into_iter()
+            .map(|m| match m {
+                HttpEndpointPathExpression::Segment(s) => s.clone(),
+                HttpEndpointPathExpression::Param(s) => s.clone(),
+            }).collect::<Vec<String>>()
+            .join("_");
+
+        format!("{:?}_{}", self.method, s).to_lowercase()
+    }
+}
+
 #[serde(tag = "type", content = "value")]
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum HttpEndpointPathExpression {
@@ -192,13 +230,6 @@ pub enum HttpEndpointPropertyExpression {
     Query(TypeExpression),
     Description(String),
     Returns(TypeExpression),
-}
-
-#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
-pub struct HttpEndpointReturnsExpression {
-    pub name: String,
-    pub value: TypeExpression,
-    pub location: Location,
 }
 
 #[serde(tag = "type")]

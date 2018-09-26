@@ -1,8 +1,7 @@
 use api_parser::expressions::{
     AnonymousRecordExpression, EnumExpression, Expression, GenericExpression,
     GenericRecordExpression, HttpEndpointExpression, HttpEndpointPropertyExpression,
-    HttpEndpointReturnsExpression, ModuleExpression, RecordExpression, Type as ApiType,
-    TypeExpression,
+    ModuleExpression, RecordExpression, Type as ApiType, TypeExpression,
 };
 use error::{AnalyzerError, Result};
 use types::Pass;
@@ -135,13 +134,13 @@ impl TypeValidator {
         Ok(())
     }
 
-    fn visit_endpoint_returns(
-        &self,
-        expr: &HttpEndpointReturnsExpression,
-        scope: &Vec<Type>,
-    ) -> Result<()> {
-        Ok(())
-    }
+    // fn visit_endpoint_returns(
+    //     &self,
+    //     expr: &HttpEndpointReturnsExpression,
+    //     scope: &Vec<Type>,
+    // ) -> Result<()> {
+    //     Ok(())
+    // }
 
     fn visit_endpoint<'a>(
         &self,
@@ -175,7 +174,7 @@ impl Pass for TypeValidator {
         ast: &ModuleExpression,
         _passes: &Vec<Box<dyn Pass>>,
     ) -> Result<ModuleExpression> {
-        let mut clone = ast.clone();
+        let clone = ast.clone();
 
         let scope = self.build_scope(ast);
 

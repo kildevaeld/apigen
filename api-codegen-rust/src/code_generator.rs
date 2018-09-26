@@ -28,14 +28,6 @@ impl RustCodeGenerator {
     }
 }
 
-// fn indent(s: &str, indent: &str) -> String {
-//     let mut out = vec![];
-//     for line in s.lines() {
-//         out.push(format!("{}{}", indent, line));
-//     }
-//     out.join("\n")
-// }
-
 impl CodeGenerator for RustCodeGenerator {
     fn transform(&self, ast: &ModuleExpression) -> Result<Vec<Artifact>> {
         let content = self.visitor.visit(ast);

@@ -57,7 +57,7 @@ impl ModuleVisitor {
             .replace(&ext, "");
 
         let content = render_module(&ModuleModel {
-            module_name: name.to_camel_case(),
+            module_name: format!("{}_service", name).to_camel_case(),
             methods,
             user_types,
         });

@@ -1,9 +1,6 @@
-use api_analyzer;
-use api_codegen;
 use api_extensions::plugins::PluginManager;
 use api_extensions::{Extension, ExtensionManager};
 use error::Result;
-use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -27,12 +24,12 @@ impl RepositoryBuilder {
     }
 }
 
-type PassesFactory = Box<Fn() -> Vec<Box<dyn api_analyzer::Pass>>>;
+//type PassesFactory = Box<Fn() -> Vec<Box<dyn api_analyzer::Pass>>>;
 
-#[derive(Default)]
-struct PluginBuilder {
-    factories: HashMap<String, PassesFactory>,
-}
+//#[derive(Default)]
+// struct PluginBuilder {
+//     factories: HashMap<String, PassesFactory>,
+// }
 
 pub struct Repository {
     plugins: ExtensionManager,
@@ -56,7 +53,7 @@ impl Repository {
             for file in files {
                 let path = file?.path();
                 match self.plugins.load_plugin(&path) {
-                    _ => {}
+                    Err(_) => {}
                     Ok(_) => {
                         info!("loaded plugin {:?}", path);
                     }

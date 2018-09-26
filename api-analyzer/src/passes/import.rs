@@ -1,7 +1,6 @@
 use analyze::analyze_file;
 use api_parser::expressions::*;
 use error::{AnalyzerError, Result};
-use std::path::Path;
 use types::Pass;
 
 #[derive(Debug)]
@@ -18,7 +17,6 @@ impl Import {
         parent: &ModuleExpression,
         passes: &Vec<Box<dyn Pass>>,
     ) -> Result<ModuleExpression> {
-        //let ppath = Path::new(parent.path.as_str());
         let pdir = parent.path.parent();
 
         if let None = pdir {

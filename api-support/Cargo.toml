@@ -4,7 +4,8 @@ version = "0.1.0"
 authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 
 [dependencies]
-reqwest = { git = "https://github.com/seanmonstar/reqwest.git", branch = "master"}
+#reqwest = { git = "https://github.com/seanmonstar/reqwest.git", branch = "master"}
+reqwest = { version = "0.9.2" }
 serde_json = "1.0"
 serde = "1.0"
 http = "0.1"

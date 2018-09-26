@@ -1,13 +1,8 @@
-use visitor::vi::TypeExpressionVisitor;
-
 use api_parser::expressions::{
-    HttpEndpointExpression, HttpEndpointPathExpression, HttpEndpointPropertyExpression,
-    HttpEndpointReturnsExpression, HttpMethod, HttpQuery,
+    HttpEndpointExpression, HttpEndpointPathExpression, HttpEndpointPropertyExpression, HttpMethod,
 };
-use handlebars::Handlebars;
-use heck::SnakeCase;
-
-use template::{render_method, MethodModel, METHOD};
+use template::{render_method, MethodModel};
+use visitor::vi::TypeExpressionVisitor;
 
 pub struct EndpointVisitor {
     type_visitor: TypeExpressionVisitor,
@@ -56,16 +51,6 @@ impl EndpointVisitor {
             match n {
                 HttpEndpointPropertyExpression::Returns(props) => {
                     returns = self.type_visitor.visit_type_expression(&props);
-                    // for ret in props {
-                    //     let status: u16 = ret.name.parse().unwrap();
-
-                    //     match status {
-                    //         200...299 => {
-                    //             returns = self.type_visitor.visit_type_expression(&ret.value)
-                    //         }
-                    //         _ => {}
-                    //     };
-                    // }
                 }
                 HttpEndpointPropertyExpression::Query(query) => {
                     has_query = true;
@@ -73,13 +58,6 @@ impl EndpointVisitor {
                         "query: {}",
                         self.type_visitor.visit_type_expression(query)
                     ));
-                    // match query {
-                    //     HttpQuery::Record(record) => {
-                    //         has_query = true;
-                    //         arguments.push(format!("query: {}", record))
-                    //     }
-                    //     _ => {}
-                    // };
                 }
                 HttpEndpointPropertyExpression::Body(b) => {
                     has_body = true;
@@ -92,12 +70,12 @@ impl EndpointVisitor {
             };
         }
 
-        let path = name.join("/");
+        //let path = name.join("/");
 
         render_method(&MethodModel {
             http_paths: paths.join(", "),
             http_method: self.method(&exp.method).to_string(),
-            method_name: name.join("_").to_snake_case(),
+            method_name: exp.name(), //name.join("_").to_snake_case(),
             method_return: returns,
             arguments: arguments.join(", "),
             has_body,

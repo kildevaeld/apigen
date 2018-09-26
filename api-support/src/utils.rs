@@ -8,7 +8,7 @@ where
 {
     match mime {
         "application/json" => Ok(serde_json::from_slice(value)?),
-        _ => Err(error::Error::Format(format!("invalid format: '{}'", mime))),
+        _ => Err(error::ErrorKind::Mime(mime.to_string()).into()),
     }
 }
 
@@ -18,7 +18,7 @@ where
 {
     match mime {
         "application/json" => Ok(serde_json::to_string(value)?),
-        _ => Err(error::Error::Format(format!("invalid format: '{}'", mime))),
+        _ => Err(error::ErrorKind::Mime(mime.to_string()).into()),
     }
 }
 

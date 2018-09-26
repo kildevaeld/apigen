@@ -10,8 +10,8 @@ extern crate handlebars;
 extern crate heck;
 extern crate rayon;
 extern crate serde;
-#[macro_use]
-extern crate log;
+// #[macro_use]
+// extern crate log;
 
 mod code_generator;
 mod rust_pass;
@@ -39,30 +39,6 @@ impl api_extensions::Extension for RustPlugin {
 }
 
 declare_extension!(RustPlugin, RustPlugin::default);
-
-// #[derive(Default, Debug)]
-// pub struct RustPlugin {}
-
-// impl Plugin for RustPlugin {
-//     fn name(&self) -> &'static str {
-//         "Rust"
-//     }
-
-//     fn on_plugin_load(&self) {
-//         println!("plugin loaded");
-//     }
-// }
-
-// impl api_codegen::CodeGeneratorPlugin for RustPlugin {
-//     fn register(
-//         &self,
-//         builder: &mut api_codegen::CodeGeneratorPluginBuilder,
-//     ) -> api_codegen::Result<()> {
-//         Ok(())
-//     }
-// }
-
-// declare_plugin!(RustPlugin, RustPlugin::default);
 
 #[cfg(test)]
 mod tests {
