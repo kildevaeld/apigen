@@ -232,6 +232,7 @@ fn parse_builtin_type(input: &str) -> Type {
         "bool" => Builtin::Bool,
         "map" => Builtin::Map,
         "date" => Builtin::Date,
+
         _ => Builtin::Void,
     };
     Type::Builtin(t)
@@ -401,11 +402,12 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
             Rule::http_method => endpoint.method = parse_http_endpoint_verb(&span),
             Rule::http_path => endpoint.path = parse_http_endpoint_path(&pair),
             Rule::http_endpoint_returns => {
+                let inner = pair.clone().into_inner().next().unwrap();
                 endpoint
                     .properties
-                    .push(HttpEndpointPropertyExpression::Returns(
-                        parse_http_endpoint_returns(&pair),
-                    ));
+                    .push(HttpEndpointPropertyExpression::Returns(parse_all_type_exp(
+                        &inner,
+                    )));
             }
             Rule::http_endpoint_body => {
                 let inner = pair.clone().into_inner().next().unwrap();

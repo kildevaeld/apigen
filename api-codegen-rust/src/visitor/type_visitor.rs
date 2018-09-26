@@ -18,6 +18,7 @@ impl TypeExpressionVisitor {
             Builtin::Bool => "bool",
             Builtin::String => "String",
             Builtin::Map => "HashMap<String, Any>",
+            Builtin::Void => "()",
             _ => "",
         };
         m.to_string()

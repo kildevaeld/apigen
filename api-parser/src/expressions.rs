@@ -189,9 +189,9 @@ pub enum HttpEndpointPathExpression {
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum HttpEndpointPropertyExpression {
     Body(TypeExpression),
-    Query(HttpQuery),
+    Query(TypeExpression),
     Description(String),
-    Returns(Vec<HttpEndpointReturnsExpression>),
+    Returns(TypeExpression),
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]

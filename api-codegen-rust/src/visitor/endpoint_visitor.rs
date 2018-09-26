@@ -55,25 +55,31 @@ impl EndpointVisitor {
         for n in &exp.properties {
             match n {
                 HttpEndpointPropertyExpression::Returns(props) => {
-                    for ret in props {
-                        let status: u16 = ret.name.parse().unwrap();
+                    returns = self.type_visitor.visit_type_expression(&props);
+                    // for ret in props {
+                    //     let status: u16 = ret.name.parse().unwrap();
 
-                        match status {
-                            200...299 => {
-                                returns = self.type_visitor.visit_type_expression(&ret.value)
-                            }
-                            _ => {}
-                        };
-                    }
+                    //     match status {
+                    //         200...299 => {
+                    //             returns = self.type_visitor.visit_type_expression(&ret.value)
+                    //         }
+                    //         _ => {}
+                    //     };
+                    // }
                 }
                 HttpEndpointPropertyExpression::Query(query) => {
-                    match query {
-                        HttpQuery::Record(record) => {
-                            has_query = true;
-                            arguments.push(format!("query: {}", record))
-                        }
-                        _ => {}
-                    };
+                    has_query = true;
+                    arguments.push(format!(
+                        "query: {}",
+                        self.type_visitor.visit_type_expression(query)
+                    ));
+                    // match query {
+                    //     HttpQuery::Record(record) => {
+                    //         has_query = true;
+                    //         arguments.push(format!("query: {}", record))
+                    //     }
+                    //     _ => {}
+                    // };
                 }
                 HttpEndpointPropertyExpression::Body(b) => {
                     has_body = true;

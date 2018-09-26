@@ -151,9 +151,15 @@ impl TypeValidator {
         for p in &expr.properties {
             match p {
                 HttpEndpointPropertyExpression::Returns(returns) => {
-                    for r in returns {
-                        self.visit_endpoint_returns(&r, &scope)?
-                    }
+                    let t = match &returns {
+                        TypeExpression::Optional(o) => o,
+                        TypeExpression::Required(o) => o,
+                        TypeExpression::Repeated(o) => o,
+                    };
+                    self.visit_type(&t, &scope)?;
+                    // for r in returns {
+                    //     self.visit_endpoint_returns(&r, &scope)?
+                    // }
                 }
                 _ => {}
             };

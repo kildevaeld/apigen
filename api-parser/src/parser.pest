@@ -92,11 +92,15 @@ http_endpoint_query = {
     "query" ~wscmnl* ~ (generic_type | anonymous_record_type | type_name)
 }
 
+// http_endpoint_returns = {
+//     "returns" ~wscmnl* ~ "{" ~wscmnl*
+//     ~ http_endpoint_returns_body
+//     ~ wscmnl* 
+//     ~"}"
+// }
+
 http_endpoint_returns = {
-    "returns" ~wscmnl* ~ "{" ~wscmnl*
-    ~ http_endpoint_returns_body
-    ~ wscmnl* 
-    ~"}"
+    "returns" ~wscmnl* ~ all_types 
 }
 
 http_endpoint_description_wrapper = _{
@@ -143,7 +147,7 @@ type_builtins = {
     "uint8" | "uint16" | "uint32" | "uint64" |
     "float" | "double" |
     "string" | "bytes" |
-    "bool" | "map" | "date"
+    "bool" | "map" | "date" | "void"
 }
 
 // Annotation
