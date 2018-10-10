@@ -17,6 +17,17 @@ pub enum UserType<'a> {
     Enum(&'a EnumExpression),
 }
 
+impl<'a> UserType<'a> {
+    pub fn name(&self) -> String {
+        let name = match self {
+            UserType::Enum(e) => &e.name,
+            UserType::GenericRecord(e) => &e.name,
+            UserType::Record(e) => &e.name,
+        };
+        name.to_owned()
+    }
+}
+
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum Builtin {
     Int8,
@@ -48,6 +59,12 @@ pub struct ModuleExpression {
 }
 
 impl ModuleExpression {
+    pub fn name(&self) -> String {
+        let mut path: PathBuf = self.path.clone();
+        path.set_extension("");
+        path.file_name().unwrap().to_str().unwrap().to_owned()
+    }
+
     fn build<'a>(&'a self, v: &'a Vec<Expression>) -> Vec<UserType<'a>> {
         v.into_iter()
             .filter_map(|m| match m {
@@ -55,7 +72,8 @@ impl ModuleExpression {
                 Expression::GenericRecord(e) => Some(UserType::GenericRecord(&e)),
                 Expression::Record(e) => Some(UserType::Record(&e)),
                 _ => None,
-            }).collect()
+            })
+            .collect()
     }
 
     pub fn local_scope<'a>(&'a self) -> Vec<UserType<'a>> {
@@ -64,6 +82,7 @@ impl ModuleExpression {
 
     pub fn imported_scope<'a>(&'a self) -> Vec<UserType<'a>> {
         let mut out = vec![];
+
         for i in &self.imports {
             let mut v = self.build(&i.body);
             out.append(&mut v);
@@ -209,7 +228,8 @@ impl HttpEndpointExpression {
             .map(|m| match m {
                 HttpEndpointPathExpression::Segment(s) => s.clone(),
                 HttpEndpointPathExpression::Param(s) => s.clone(),
-            }).collect::<Vec<String>>()
+            })
+            .collect::<Vec<String>>()
             .join("_");
 
         format!("{:?}_{}", self.method, s).to_lowercase()
@@ -223,6 +243,13 @@ pub enum HttpEndpointPathExpression {
     Param(String),
 }
 
+#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
+
+pub enum HttpEndpointAuthType {
+    Token,
+    Simple,
+}
+
 #[serde(tag = "type", content = "value")]
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum HttpEndpointPropertyExpression {
@@ -230,6 +257,7 @@ pub enum HttpEndpointPropertyExpression {
     Query(TypeExpression),
     Description(String),
     Returns(TypeExpression),
+    Auth(HttpEndpointAuthType),
 }
 
 #[serde(tag = "type")]
