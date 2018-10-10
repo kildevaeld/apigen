@@ -33,12 +33,12 @@ impl ModuleVisitor {
 
         for exp in &ast.body {
             if let Some(entry) = match exp {
-                Expression::Record(record) => Some(self.record_visitor.visit(&record)),
+                Expression::Record(record) => Some(self.record_visitor.visit(ast, &record)),
                 Expression::GenericRecord(record) => {
-                    Some(self.generic_record_visitor.visit(&record))
+                    Some(self.generic_record_visitor.visit(ast, &record))
                 }
                 Expression::HttpEndpoint(endpoint) => {
-                    methods.push(indent(&self.endpoint_visitor.visit(&endpoint), "  "));
+                    methods.push(indent(&self.endpoint_visitor.visit(ast, &endpoint), "  "));
                     None
                 }
                 _ => None,
@@ -46,6 +46,8 @@ impl ModuleVisitor {
                 user_types.push(entry);
             }
         }
+
+        let mut imports = ast.imports.iter().map(|m| m.name()).collect::<Vec<_>>();
 
         let path = PathBuf::from(&ast.path);
         let ext = path.extension().unwrap_or_default().to_str().unwrap();
@@ -60,6 +62,7 @@ impl ModuleVisitor {
             module_name: format!("{}_service", name).to_camel_case(),
             methods,
             user_types,
+            imports,
         });
 
         content

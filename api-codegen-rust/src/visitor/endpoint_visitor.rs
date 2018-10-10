@@ -1,5 +1,6 @@
 use api_parser::expressions::{
     HttpEndpointExpression, HttpEndpointPathExpression, HttpEndpointPropertyExpression, HttpMethod,
+    ModuleExpression,
 };
 use template::{render_method, MethodModel};
 use visitor::vi::TypeExpressionVisitor;
@@ -25,7 +26,7 @@ impl EndpointVisitor {
         }
     }
 
-    pub fn visit(&self, exp: &HttpEndpointExpression) -> String {
+    pub fn visit(&self, module: &ModuleExpression, exp: &HttpEndpointExpression) -> String {
         let mut name = vec![];
         let mut paths = vec![];
         let mut arguments = vec![];
@@ -50,20 +51,20 @@ impl EndpointVisitor {
         for n in &exp.properties {
             match n {
                 HttpEndpointPropertyExpression::Returns(props) => {
-                    returns = self.type_visitor.visit_type_expression(&props);
+                    returns = self.type_visitor.visit_type_expression(module, &props);
                 }
                 HttpEndpointPropertyExpression::Query(query) => {
                     has_query = true;
                     arguments.push(format!(
                         "query: {}",
-                        self.type_visitor.visit_type_expression(query)
+                        self.type_visitor.visit_type_expression(module, query)
                     ));
                 }
                 HttpEndpointPropertyExpression::Body(b) => {
                     has_body = true;
                     arguments.push(format!(
                         "body: {}",
-                        self.type_visitor.visit_type_expression(b)
+                        self.type_visitor.visit_type_expression(module, b)
                     ));
                 }
                 _ => {}

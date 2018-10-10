@@ -1,4 +1,4 @@
-use api_parser::expressions::GenericRecordExpression;
+use api_parser::expressions::{GenericRecordExpression, ModuleExpression};
 use visitor::vi::TypeExpressionVisitor;
 
 pub struct GenericRecordVisitor {
@@ -12,7 +12,7 @@ impl GenericRecordVisitor {
         }
     }
 
-    pub fn visit(&self, exp: &GenericRecordExpression) -> String {
+    pub fn visit(&self, module: &ModuleExpression, exp: &GenericRecordExpression) -> String {
         let mut out: Vec<String> = vec![];
 
         let types: Vec<String> = (&exp.type_names)
@@ -25,7 +25,7 @@ impl GenericRecordVisitor {
 
         let mut inner: Vec<String> = vec![];
         for prop in &exp.properties {
-            let t = self.type_visitor.visit_type_expression(&prop.value);
+            let t = self.type_visitor.visit_type_expression(module, &prop.value);
             inner.push(format!("  {}: {}", prop.name, t));
         }
         out.push(inner.join(",\n"));

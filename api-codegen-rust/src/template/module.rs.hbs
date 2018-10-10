@@ -7,6 +7,9 @@ use serde::Serialize;
 
 use api_support::error;
 use api_support::utils;
+{{#each imports}}
+use super::{{{this}}};
+{{/each}}
 {{#each user_types}}
 {{{this}}}
 {{/each}}

@@ -10,7 +10,7 @@ pub fn {{method_name}}(&self) -> Box<Future<Item={{{method_return}}}, Error=erro
     request = request.query(&query);
     {{/if}}
     {{#if has_body}}
-    let body_data = utils::encode("application/json", body)?;
+    let body_data = utils::encode("application/json", &body)?;
     request = request.body(body_data);
     {{/if}}
     request = request.header(CONTENT_TYPE, "application/json");

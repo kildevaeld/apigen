@@ -30,7 +30,9 @@ impl api_extensions::Extension for RustPlugin {
     }
 
     fn passes(&self) -> Option<Vec<Box<dyn api_analyzer::Pass>>> {
-        Some(vec![Box::new(RustPass::new())])
+        let mut passes = api_analyzer::default_passes();
+        passes.push(Box::new(RustPass::new()));
+        Some(passes)
     }
 
     fn generator(&self) -> Option<Box<dyn api_codegen::CodeGenerator>> {

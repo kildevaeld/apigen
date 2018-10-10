@@ -22,6 +22,7 @@ pub struct ModuleModel {
     pub module_name: String,
     pub user_types: Vec<String>,
     pub methods: Vec<String>,
+    pub imports: Vec<String>,
 }
 
 #[derive(Serialize)]

@@ -7,5 +7,5 @@ extern crate api_support;
 pub use api_support::error;
 {{#each modules}}
 mod {{this}};
-pub use {{this}}::*;
+pub use self::{{this}}::*;
 {{/each}}
