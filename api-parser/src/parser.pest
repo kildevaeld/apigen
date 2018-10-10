@@ -82,6 +82,7 @@ http_endpoint_property = _{
     | http_endpoint_body
     | http_endpoint_query
     | http_endpoint_description_wrapper
+    | http_endpoint_auth
 }
 
 http_endpoint_body = {
@@ -92,12 +93,14 @@ http_endpoint_query = {
     "query" ~wscmnl* ~ (generic_type | anonymous_record_type | type_name)
 }
 
-// http_endpoint_returns = {
-//     "returns" ~wscmnl* ~ "{" ~wscmnl*
-//     ~ http_endpoint_returns_body
-//     ~ wscmnl* 
-//     ~"}"
-// }
+http_endpoint_auth = {
+    "auth" ~wscmnl* ~http_endpoint_auth_type
+}
+
+http_endpoint_auth_type = {
+    "token" | "simple"
+}
+
 
 http_endpoint_returns = {
     "returns" ~wscmnl* ~ all_types 
@@ -111,13 +114,13 @@ http_endpoint_description = {
     (!"}" ~ any)*
 }
 
-http_endpoint_returns_body = _{
-    http_endpoint_returns_body_property ~(wscmnl+ ~http_endpoint_returns_body_property)*
-}
+// http_endpoint_returns_body = _{
+//     http_endpoint_returns_body_property ~(wscmnl+ ~http_endpoint_returns_body_property)*
+// }
 
-http_endpoint_returns_body_property = _{
-    http_status_code ~wscmnl* ~ all_types
-}
+// http_endpoint_returns_body_property = _{
+//     http_status_code ~wscmnl* ~ all_types
+// }
 
 
 http_path =  { "/" ~ (http_path_segment ~ ("/" ~ http_path_segment)*)? }

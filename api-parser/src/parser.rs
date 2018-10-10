@@ -404,6 +404,11 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
                         span.as_str().trim().to_string(),
                     ))
             }
+            Rule::http_endpoint_auth => {
+                let inner = pair.clone().into_inner().next().unwrap();
+
+                println!("{:?}", inner);
+            }
             _ => {}
         };
     }
