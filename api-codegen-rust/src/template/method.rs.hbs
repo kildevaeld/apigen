@@ -4,16 +4,16 @@ pub fn {{method_name}}(&self, {{{arguments}}}) -> Box<Future<Item={{{method_retu
 {{else}}
 pub fn {{method_name}}(&self) -> Box<Future<Item={{{method_return}}}, Error=error::Error>> {
 {{/if }}
-    let url = utils::join(&self.endpoint, &[{{{http_paths}}}])?;
+    let url = utils::join(&self.endpoint, &[{{{http_paths}}}]).unwrap();
     let mut request = self.client.request({{http_method}}, url);
     {{#if has_query}}
     request = request.query(&query);
     {{/if}}
     {{#if has_body}}
-    let body_data = utils::encode("application/json", &body)?;
+    let body_data = utils::encode("application/json", &body).unwrap();
     request = request.body(body_data);
     {{/if}}
-    request = request.header(CONTENT_TYPE, "application/json");
+    request = request.header("Content-Type", "application/json");
 
     async_request!(self.client, request, {{{method_return}}})
 }

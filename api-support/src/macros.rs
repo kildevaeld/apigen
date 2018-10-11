@@ -10,7 +10,7 @@ macro_rules! async_request {
 
                 let mime = res
                     .headers()
-                    .get(CONTENT_TYPE)
+                    .get("application/json")
                     .and_then(|ct| ct.to_str().ok())
                     .unwrap_or("application/json")
                     .to_string();
@@ -21,7 +21,8 @@ macro_rules! async_request {
                     .and_then(move |b| Ok($crate::utils::decode::<$type>(&mime, &b)?));
 
                 Box::new(b)
-            }).from_err();
+            })
+            .from_err();
 
         Box::new(f)
     }};

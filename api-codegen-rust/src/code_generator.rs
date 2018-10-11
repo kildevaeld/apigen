@@ -64,6 +64,8 @@ impl CodeGenerator for RustCodeGenerator {
             mods.push(name.to_snake_case());
         }
 
+        
+
         self.fix_paths(&mut artifacts);
 
         artifacts.push(Artifact {
