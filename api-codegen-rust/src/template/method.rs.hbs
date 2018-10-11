@@ -17,7 +17,7 @@ pub fn {{method_name}}(&self) -> Box<Future<Item={{{method_return}}}, Error=erro
     {{#if has_auth}}
     request = match auth {
         auth::Authorization::Token(token) => request.header("Authorization", format!("bearer {}", token)),
-        _ => panic!("invalid auth")
+        auth::Authorization::Simple(user,pw) => request.basic_auth(user, Some(pw)),
     };
     {{/if}}
 
