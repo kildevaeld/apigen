@@ -15,6 +15,7 @@ pub struct MethodModel {
     pub arguments: String,
     pub has_body: bool,
     pub has_query: bool,
+    pub has_auth: bool,
 }
 
 #[derive(Serialize)]
@@ -37,6 +38,7 @@ pub struct CargoModel {
 
 pub fn render<T: Serialize>(templ: &str, model: &T) -> String {
     let hbs = Handlebars::new();
+
     hbs.render_template(templ, &to_json(model)).unwrap()
 }
 

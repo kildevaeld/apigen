@@ -246,7 +246,7 @@ pub enum HttpEndpointPathExpression {
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 
 pub enum HttpEndpointAuthType {
-    Token,
+    Token(String),
     Simple,
 }
 

@@ -8,6 +8,7 @@ pub extern crate url;
 #[macro_use]
 extern crate error_chain;
 
+pub mod auth;
 pub mod error;
 pub mod macros;
 pub mod utils;

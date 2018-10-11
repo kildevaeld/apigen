@@ -6,6 +6,7 @@ extern crate api_codegen;
 extern crate api_extensions;
 extern crate api_parser;
 extern crate bytes;
+#[macro_use]
 extern crate handlebars;
 extern crate heck;
 extern crate rayon;

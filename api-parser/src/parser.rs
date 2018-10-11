@@ -407,7 +407,15 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
             Rule::http_endpoint_auth => {
                 let inner = pair.clone().into_inner().next().unwrap();
 
-                println!("{:?}", inner);
+                let auth = match inner.clone().into_span().as_str() {
+                    "token" => HttpEndpointAuthType::Token("bearer".to_owned()),
+                    "simple" => HttpEndpointAuthType::Simple,
+                    s => panic!(format!("invalid auth type {}", s)),
+                };
+
+                endpoint
+                    .properties
+                    .push(HttpEndpointPropertyExpression::Auth(auth))
             }
             _ => {}
         };

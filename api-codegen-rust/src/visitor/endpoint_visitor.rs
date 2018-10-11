@@ -33,6 +33,7 @@ impl EndpointVisitor {
         let mut returns = String::new();
         let mut has_body = false;
         let mut has_query = false;
+        let mut has_auth = false;
 
         for n in &exp.path {
             name.push(match n {
@@ -67,6 +68,10 @@ impl EndpointVisitor {
                         self.type_visitor.visit_type_expression(module, b)
                     ));
                 }
+                HttpEndpointPropertyExpression::Auth(a) => {
+                    has_auth = true;
+                    arguments.push(format!("auth: auth::Authorization"));
+                }
                 _ => {}
             };
         }
@@ -81,6 +86,7 @@ impl EndpointVisitor {
             arguments: arguments.join(", "),
             has_body,
             has_query,
+            has_auth,
         })
     }
 }
