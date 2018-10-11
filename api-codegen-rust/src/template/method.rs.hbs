@@ -14,6 +14,12 @@ pub fn {{method_name}}(&self) -> Box<Future<Item={{{method_return}}}, Error=erro
     request = request.body(body_data);
     {{/if}}
     request = request.header("Content-Type", "application/json");
+    {{#if has_auth}}
+    request = match auth {
+        auth::Authorization::Token(token) => request.header("Authorization", format!("bearer {}", token)),
+        _ => panic!("invalid auth")
+    };
+    {{/if}}
 
     async_request!(self.client, request, {{{method_return}}})
 }
