@@ -88,10 +88,12 @@ impl TypeValidator {
         let found = found.unwrap();
 
         if let Type::GenericRecord(found) = found {
-            if found.properties.len() != expr.types.len() {
+            if found.type_names.len() != expr.types.len() {
                 return Err(AnalyzerError::TypeError(format!(
-                    "'{}' invalid number of argumnents",
-                    expr.name
+                    "'{}' invalid number of argumnents: {} ~= {}",
+                    expr.name,
+                    found.type_names.len(),
+                    expr.types.len()
                 )));
             }
         }
