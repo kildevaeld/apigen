@@ -56,7 +56,8 @@ impl RustPass {
                     .into_iter()
                     .map(|ref mut m| {
                         self.resolve_type(m, pname, &format!("{}_{}", prop, &name), out)
-                    }).collect();
+                    })
+                    .collect();
 
                 Type::Generic(clone)
             }
@@ -103,14 +104,17 @@ impl RustPass {
 
     fn visit_endpoint(&self, record: &mut HttpEndpointExpression) -> Option<Vec<RecordExpression>> {
         let mut out: Vec<RecordExpression> = vec![];
-
+        let name = record.name();
         for p in &mut record.properties {
             match p {
                 HttpEndpointPropertyExpression::Returns(returns) => {
-                    *returns = self.resolve_type(returns, "", "Result", &mut out);
+                    *returns = self.resolve_type(returns, &name, "Result", &mut out);
                 }
                 HttpEndpointPropertyExpression::Body(body) => {
-                    *body = self.resolve_type(body, "", "Body", &mut out);
+                    *body = self.resolve_type(body, &name, "Body", &mut out);
+                }
+                HttpEndpointPropertyExpression::Query(query) => {
+                    *query = self.resolve_type(query, &name, "Query", &mut out);
                 }
                 _ => {}
             };
@@ -140,7 +144,8 @@ impl Pass for RustPass {
                 Expression::Record(r) => self.visit_record(r),
                 Expression::HttpEndpoint(r) => self.visit_endpoint(r),
                 _ => None,
-            }).flatten()
+            })
+            .flatten()
             .map(|m| Expression::Record(m))
             .collect();
 
