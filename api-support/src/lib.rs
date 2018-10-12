@@ -13,6 +13,8 @@ pub mod error;
 pub mod macros;
 pub mod utils;
 
+pub type Map = serde_json::Value;
+
 #[cfg(test)]
 mod tests {
     #[test]
