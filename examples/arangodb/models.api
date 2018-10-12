@@ -9,6 +9,6 @@ record User {
     username string
     passwd string?
     active bool
-    extra map
+    /*extra map*/
     array string[]
 }
