@@ -23,7 +23,7 @@ impl TypeExpressionVisitor {
             Builtin::Float => "f64",
             Builtin::Bool => "bool",
             Builtin::String => "String",
-            Builtin::Map => "HashMap<String, Any>",
+            Builtin::Map => "api_support::Map",
             Builtin::Void => "()",
             _ => "",
         };
