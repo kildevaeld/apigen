@@ -311,6 +311,7 @@ fn parse_http_endpoint_verb(input: &pest::Span) -> HttpMethod {
         "put" => HttpMethod::Put,
         "patch" => HttpMethod::Patch,
         "delete" => HttpMethod::Delete,
+        "head" => HttpMethod::Head,
         _ => HttpMethod::Get,
     }
 }
@@ -403,6 +404,15 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
                     .push(HttpEndpointPropertyExpression::Description(
                         span.as_str().trim().to_string(),
                     ))
+            }
+            Rule::http_endpoint_query => {
+                let inner = pair.clone().into_inner().next().unwrap();
+
+                endpoint
+                    .properties
+                    .push(HttpEndpointPropertyExpression::Query(parse_all_type_exp(
+                        &inner,
+                    )));
             }
             Rule::http_endpoint_auth => {
                 let inner = pair.clone().into_inner().next().unwrap();

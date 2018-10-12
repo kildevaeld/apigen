@@ -128,7 +128,7 @@ http_path_segment =  _{ http_path_segment_part | http_path_segment_param }
 http_path_segment_part = { path_segment }
 http_path_segment_param = { ":" ~ path_segment }
 
-http_method = { "get" | "post" | "put" | "patch" | "delete" }
+http_method = { "get" | "post" | "put" | "patch" | "delete" | "head" }
 
 http_status_code = {
     digit{3}
