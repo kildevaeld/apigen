@@ -32,7 +32,17 @@ impl TypeExpressionVisitor {
             out.push(self.visit_type_expression(module, &t));
         }
 
-        format!("{}<{}>", exp.name, out.join(", "))
+        let o = format!("{}<{}>", exp.name, out.join(", "));
+        let imported = module.imported_scope();
+
+        if let Some(m) = imported.iter().find(|m| m.name() == exp.name) {
+            let imported = module
+                .imports
+                .iter()
+                .find(|i| i.local_scope().iter().find(|mm| mm == &m).is_some());
+            return format!("{}::{}", imported.unwrap().name(), o);
+        }
+        o
     }
 
     pub fn visit_anonymous_type(&self, _exp: &AnonymousRecordExpression) -> String {
@@ -46,16 +56,7 @@ impl TypeExpressionVisitor {
             Type::User(b) => {
                 let imported = module.imported_scope();
 
-                if let Some(m) = imported.iter().find(|m| {
-                    // let name = match m {
-                    //     UserType::Enum(e) => &e.name,
-                    //     UserType::GenericRecord(e) => &e.name,
-                    //     UserType::Record(e) => &e.name,
-                    //     _ => "",
-                    // };
-
-                    m.name() == *b
-                }) {
+                if let Some(m) = imported.iter().find(|m| m.name() == *b) {
                     let imported = module
                         .imports
                         .iter()
