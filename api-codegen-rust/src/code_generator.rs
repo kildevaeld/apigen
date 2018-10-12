@@ -64,8 +64,6 @@ impl CodeGenerator for RustCodeGenerator {
             mods.push(name.to_snake_case());
         }
 
-        
-
         self.fix_paths(&mut artifacts);
 
         artifacts.push(Artifact {
@@ -74,7 +72,7 @@ impl CodeGenerator for RustCodeGenerator {
         });
 
         artifacts.push(Artifact {
-            path: path.join("cargo.toml"),
+            path: path.join("Cargo.toml"),
             content: Bytes::from(render_cargo(&CargoModel {
                 name: "package".to_owned(),
             })),
