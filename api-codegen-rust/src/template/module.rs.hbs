@@ -2,7 +2,7 @@ use api_support::futures::{Future, Stream};
 use api_support::reqwest::async::{Client, Decoder};
 use api_support::reqwest::{Method, Request};
 use std::mem;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 use api_support::error;
 use api_support::utils;
