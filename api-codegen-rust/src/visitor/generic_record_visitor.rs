@@ -15,13 +15,17 @@ impl GenericRecordVisitor {
     pub fn visit(&self, module: &ModuleExpression, exp: &GenericRecordExpression) -> String {
         let mut out: Vec<String> = vec![];
 
-        let types: Vec<String> = (&exp.type_names)
-            .into_iter()
-            .map(|k| format!("{}: Serialize + Deserialize", k))
-            .collect();
+        // let types: Vec<String> = (&exp.type_names)
+        //     .into_iter()
+        //     .map(|k| format!("{}: Serialize + Deserialize", k))
+        //     .collect();
 
         out.push("#[derive(Debug, Default, Serialize, Deserialize)]".to_string());
-        out.push(format!("pub struct {}<{}> {{", exp.name, types.join(", ")));
+        out.push(format!(
+            "pub struct {}<{}> {{",
+            exp.name,
+            exp.type_names.join(", ")
+        ));
 
         let mut inner: Vec<String> = vec![];
         for prop in &exp.properties {
