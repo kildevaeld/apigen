@@ -203,6 +203,7 @@ pub enum HttpMethod {
     Post,
     Delete,
     Patch,
+    Head,
 }
 
 #[serde(tag = "type", content = "value")]
