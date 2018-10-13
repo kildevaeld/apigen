@@ -25,6 +25,7 @@ impl TypeExpressionVisitor {
             Builtin::String => "String",
             Builtin::Map => "api_support::Map",
             Builtin::Void => "()",
+            Builtin::Bytes => "Vec<u8>",
             _ => "",
         };
         m.to_string()

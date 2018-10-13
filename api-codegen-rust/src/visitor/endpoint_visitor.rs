@@ -23,6 +23,7 @@ impl EndpointVisitor {
             HttpMethod::Put => "Method::PUT",
             HttpMethod::Patch => "Method::PATCH",
             HttpMethod::Delete => "Method::DELETE",
+            HttpMethod::Head => "Method::HEAD",
         }
     }
 

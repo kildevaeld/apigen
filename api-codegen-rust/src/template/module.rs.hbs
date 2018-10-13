@@ -15,17 +15,17 @@ use super::{{{this}}};
 {{{this}}}
 {{/each}}
 {{#if methods}}
-pub struct {{{module_name}}} {
-    client: Client,
+pub struct {{{module_name}}}<'a> {
+    client: &'a Client,
     endpoint: String,
 }
 
-impl {{module_name}} {
-    pub fn new(endpoint: &str) -> {{module_name}} {
+impl<'a>{{module_name}}<'a> {
+    /*pub fn new(endpoint: &str) -> {{module_name}} {
         {{module_name}}::with_client(Client::new(), endpoint)
-    }
+    }*/
 
-    pub fn with_client(client: Client, endpoint: &str) -> {{module_name}} {
+    pub fn with_client(client: &'a Client, endpoint: &str) -> {{module_name}}<'a> {
         {{module_name}}{
             client: client,
             endpoint: String::from(endpoint),

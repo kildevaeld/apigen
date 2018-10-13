@@ -30,7 +30,13 @@ impl GenericRecordVisitor {
         let mut inner: Vec<String> = vec![];
         for prop in &exp.properties {
             let t = self.type_visitor.visit_type_expression(module, &prop.value);
-            inner.push(format!("  {}: {}", prop.name, t));
+            let prop_name = match prop.name.as_str() {
+                "type" | "match" => {
+                    format!("#[serde(rename = \"{}\")]\n  pub {}_", prop.name, prop.name)
+                }
+                s => format!("pub {}", s),
+            };
+            inner.push(format!("  {}: {}", prop_name, t));
         }
         out.push(inner.join(",\n"));
         out.push("}".to_string());

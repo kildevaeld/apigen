@@ -15,6 +15,12 @@ pub mod utils;
 
 pub type Map = serde_json::Value;
 
+pub mod prelude {
+    pub use super::auth::*;
+    pub use super::futures::Future;
+    pub use super::utils::*;
+}
+
 #[cfg(test)]
 mod tests {
     #[test]

@@ -25,9 +25,10 @@ where
 pub fn join(endpoint: &str, path: &[&str]) -> error::Result<Url> {
     let mut url: Url = endpoint.parse()?;
     let mut full_path = path.join("/");
-    url.set_path(&mut full_path);
+    //url.set_path(&mut full_path);
 
-    Ok(url)
+    Ok(url.join(&full_path)?)
+    //Ok(url)
 }
 
 pub fn join_query(endpoint: &str, path: &[&str]) -> error::Result<Url> {

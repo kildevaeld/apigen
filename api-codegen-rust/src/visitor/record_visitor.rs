@@ -22,9 +22,9 @@ impl RecordVisitor {
             let t = self.type_visitor.visit_type_expression(module, &prop.value);
             let prop_name = match prop.name.as_str() {
                 "type" | "match" => {
-                    format!("#[serde(rename = \"{}\")]\n  {}_", prop.name, prop.name)
+                    format!("#[serde(rename = \"{}\")]\n  pub {}_", prop.name, prop.name)
                 }
-                s => s.to_owned(),
+                s => format!("pub {}", s),
             };
             inner.push(format!("  {}: {}", prop_name, t));
         }

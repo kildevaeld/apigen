@@ -1,6 +1,6 @@
 
 {{#if arguments }}
-pub fn {{method_name}}(&self, {{{arguments}}}) -> Box<Future<Item={{{method_return}}}, Error=error::Error>> {
+pub fn {{method_name}}(&self, {{{arguments}}}) -> impl Future<Item={{{method_return}}}, Error=error::Error> {
 {{else}}
 pub fn {{method_name}}(&self) -> Box<Future<Item={{{method_return}}}, Error=error::Error>> {
 {{/if }}
