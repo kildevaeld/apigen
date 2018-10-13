@@ -8,7 +8,7 @@ pub enum Type {
     User(String),
     Generic(GenericExpression),
     Anonymous(AnonymousRecordExpression),
-    //Array(Type<),
+    Array(ArrayExpression),
 }
 
 #[derive(PartialEq, Debug)]
@@ -139,7 +139,13 @@ pub struct RecordPropertyExpression {
 pub enum TypeExpression {
     Required(Type),
     Optional(Type),
-    Repeated(Type),
+    //Repeated(Type),
+}
+
+#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
+pub struct ArrayExpression {
+    pub value: Box<TypeExpression>,
+    pub location: Location,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]

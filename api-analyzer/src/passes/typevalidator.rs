@@ -1,5 +1,5 @@
 use api_parser::expressions::{
-    AnonymousRecordExpression, EnumExpression, Expression, GenericExpression,
+    AnonymousRecordExpression, ArrayExpression, EnumExpression, Expression, GenericExpression,
     GenericRecordExpression, HttpEndpointExpression, HttpEndpointPropertyExpression,
     ModuleExpression, RecordExpression, Type as ApiType, TypeExpression,
 };
@@ -106,10 +106,18 @@ impl TypeValidator {
             let t = match &prop.value {
                 TypeExpression::Optional(o) => o,
                 TypeExpression::Required(o) => o,
-                TypeExpression::Repeated(o) => o,
             };
             self.visit_type(&t, &scope)?;
         }
+        Ok(())
+    }
+
+    fn visit_array_type(&self, expr: &ArrayExpression, scope: &Vec<Type>) -> Result<()> {
+        let t = match *expr.value.clone() {
+            TypeExpression::Optional(o) => o,
+            TypeExpression::Required(o) => o,
+        };
+        self.visit_type(&t, &scope)?;
         Ok(())
     }
 
@@ -118,6 +126,7 @@ impl TypeValidator {
             ApiType::User(name) => self.visit_user_type(&name, &scope)?,
             ApiType::Generic(generic) => self.visit_generic_type(&generic, &scope)?,
             ApiType::Anonymous(record) => self.visit_anonymous(&record, &scope)?,
+            ApiType::Array(array) => self.visit_array_type(&array, &scope)?,
             _ => {}
         };
         Ok(())
@@ -128,7 +137,6 @@ impl TypeValidator {
             let t = match &prop.value {
                 TypeExpression::Optional(o) => o,
                 TypeExpression::Required(o) => o,
-                TypeExpression::Repeated(o) => o,
             };
             self.visit_type(&t, &scope)?;
         }
@@ -155,7 +163,6 @@ impl TypeValidator {
                     let t = match &returns {
                         TypeExpression::Optional(o) => o,
                         TypeExpression::Required(o) => o,
-                        TypeExpression::Repeated(o) => o,
                     };
                     self.visit_type(&t, &scope)?;
                     // for r in returns {

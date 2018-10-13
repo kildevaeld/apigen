@@ -76,9 +76,9 @@ impl RustPass {
             TypeExpression::Optional(inner) => {
                 TypeExpression::Optional(self.resolve_inner(inner, pname, prop, out))
             }
-            TypeExpression::Repeated(inner) => {
-                TypeExpression::Repeated(self.resolve_inner(inner, pname, prop, out))
-            }
+            // TypeExpression::Repeated(inner) => {
+            //     TypeExpression::Repeated(self.resolve_inner(inner, pname, prop, out))
+            // }
             TypeExpression::Required(inner) => {
                 TypeExpression::Required(self.resolve_inner(inner, pname, prop, out))
             }

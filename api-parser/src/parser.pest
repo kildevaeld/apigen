@@ -149,9 +149,9 @@ http_status_code = {
 
 // Types 
 all_types = _{ optional_type | repeated_type | generic_type | anonymous_record_type | types }
-optional_type = { (types | repeated_type | generic_type) ~ "?" } 
+optional_type = { (repeated_type | generic_type | anonymous_record_type | types) ~ "?" } 
 
-repeated_type = { (types | generic_type)~ "[]" }
+repeated_type = { "[" ~(generic_type | anonymous_record_type | types )~ "]" }
 
 generic_type = { type_name ~"<" ~(optional_type | repeated_type | types | anonymous_record_type)  ~ ">" }
 

@@ -16,7 +16,7 @@ post /_api/database {
     auth token
     body {
         name string
-        users User[]
+        users [User]?
     }
     returns Response<bool>
     description {

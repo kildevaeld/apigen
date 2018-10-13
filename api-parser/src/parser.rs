@@ -289,6 +289,21 @@ fn parse_anonymous_record_type(input: &Pair) -> Type {
     Type::Anonymous(exp)
 }
 
+fn parse_array_type(input: &Pair) -> Type {
+    let span = input.clone().into_span();
+    let mut exp = ArrayExpression {
+        location: Location(span.start(), span.end()),
+        value: Box::new(TypeExpression::Required(Type::Builtin(Builtin::Void))),
+    };
+
+    for pair in input.clone().into_inner() {
+        //println!("{:?}", pair);
+        exp.value = Box::new(parse_all_type_exp(&pair));
+    }
+
+    Type::Array(exp)
+}
+
 fn parse_all_type_exp(input: &Pair) -> TypeExpression {
     //println!("{:?}", input);
 
@@ -296,6 +311,7 @@ fn parse_all_type_exp(input: &Pair) -> TypeExpression {
         Rule::generic_type
         | Rule::type_builtins
         | Rule::type_name
+        | Rule::repeated_type
         | Rule::anonymous_record_type => TypeExpression::Required(parse_all_type(&input)),
         /*Rule::generic_type => TypeExpression::Required(parse_generic_type(&input)),
         Rule::type_builtins => TypeExpression::Required(parse_builtin_type(span.as_str())),
@@ -307,10 +323,10 @@ fn parse_all_type_exp(input: &Pair) -> TypeExpression {
             let pair = input.clone().into_inner().next().unwrap();
             TypeExpression::Optional(parse_all_type(&pair))
         }
-        Rule::repeated_type => {
-            let pair = input.clone().into_inner().next().unwrap();
-            TypeExpression::Repeated(parse_all_type(&pair))
-        }
+        // Rule::repeated_type => {
+        //     let pair = input.clone().into_inner().next().unwrap();
+        //     TypeExpression::Repeated(parse_all_type(&pair))
+        // }
         _ => TypeExpression::Required(Type::Builtin(Builtin::Void)),
     }
 }
@@ -322,6 +338,7 @@ fn parse_all_type(input: &Pair) -> Type {
         Rule::type_builtins => parse_builtin_type(span.as_str()),
         Rule::type_name => Type::User(String::from(span.as_str())),
         Rule::anonymous_record_type => parse_anonymous_record_type(&input),
+        Rule::repeated_type => parse_array_type(&input),
         _ => Type::Builtin(Builtin::Void),
     }
 }
@@ -341,18 +358,20 @@ fn parse_property(input: &Pair) -> RecordPropertyExpression {
         let span = pair.clone().into_span();
         match pair.as_rule() {
             Rule::identifier => prop.name = String::from(span.as_str()),
-            Rule::type_builtins | Rule::type_name | Rule::anonymous_record_type => {
-                prop.value = TypeExpression::Required(parse_all_type(&pair));
+            // Rule::type_builtins | Rule::type_name | Rule::anonymous_record_type => {
+            //     prop.value = TypeExpression::Required(parse_all_type(&pair));
+            // }
+            // Rule::optional_type => {
+            //     let pair = pair.clone().into_inner().next().unwrap();
+            //     prop.value = TypeExpression::Optional(parse_all_type(&pair));
+            // }
+            // Rule::repeated_type => {
+            //     let pair = pair.clone().into_inner().next().unwrap();
+            //     prop.value = TypeExpression::Repeated(parse_all_type(&pair));
+            // }
+            _ => {
+                prop.value = parse_all_type_exp(&pair);
             }
-            Rule::optional_type => {
-                let pair = pair.clone().into_inner().next().unwrap();
-                prop.value = TypeExpression::Optional(parse_all_type(&pair));
-            }
-            Rule::repeated_type => {
-                let pair = pair.clone().into_inner().next().unwrap();
-                prop.value = TypeExpression::Repeated(parse_all_type(&pair));
-            }
-            _ => {}
         };
     }
 

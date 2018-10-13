@@ -1,7 +1,7 @@
 
 record Response<T> {
     error bool
-    code int16
+    code i16
     result T
 }
 
@@ -9,6 +9,6 @@ record User {
     username string
     passwd string?
     active bool
-    /*extra map*/
-    array string[]
+    extra object?
+    array [string]?
 }

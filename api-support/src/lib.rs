@@ -13,7 +13,8 @@ pub mod error;
 pub mod macros;
 pub mod utils;
 
-pub type Map = serde_json::Value;
+pub type Any = serde_json::Value;
+pub type Object = serde_json::Map<String, Any>;
 
 pub mod prelude {
     pub use super::auth::*;

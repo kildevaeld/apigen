@@ -72,6 +72,7 @@ impl TypeExpressionVisitor {
                 }
                 b.clone()
             }
+            Type::Array(e) => format!("Vec<{}>", self.visit_type_expression(module, &e.value)),
             Type::Anonymous(b) => self.visit_anonymous_type(b),
         }
     }
@@ -81,7 +82,7 @@ impl TypeExpressionVisitor {
             TypeExpression::Optional(inner) => {
                 format!("Option<{}>", self.visit_type(module, inner))
             }
-            TypeExpression::Repeated(inner) => format!("Vec<{}>", self.visit_type(module, inner)),
+            //TypeExpression::Repeated(inner) => format!("Vec<{}>", self.visit_type(module, inner)),
             TypeExpression::Required(inner) => self.visit_type(module, inner),
         }
     }
