@@ -2,7 +2,7 @@ use api_parser::expressions::{Expression, ModuleExpression};
 use heck::CamelCase;
 use std::path::PathBuf;
 use template::{render_module, ModuleModel};
-use visitor::vi::{EndpointVisitor, GenericRecordVisitor, RecordVisitor};
+use visitor::vi::{EndpointVisitor, EnumVisitor, GenericRecordVisitor, RecordVisitor};
 
 fn indent(s: &str, indent: &str) -> String {
     let mut out = vec![];
@@ -16,6 +16,7 @@ pub struct ModuleVisitor {
     record_visitor: RecordVisitor,
     generic_record_visitor: GenericRecordVisitor,
     endpoint_visitor: EndpointVisitor,
+    enum_visitor: EnumVisitor,
 }
 
 impl ModuleVisitor {
@@ -24,6 +25,7 @@ impl ModuleVisitor {
             generic_record_visitor: GenericRecordVisitor::new(),
             record_visitor: RecordVisitor::new(),
             endpoint_visitor: EndpointVisitor::new(),
+            enum_visitor: EnumVisitor::new(),
         }
     }
 
@@ -37,6 +39,7 @@ impl ModuleVisitor {
                 Expression::GenericRecord(record) => {
                     Some(self.generic_record_visitor.visit(ast, &record))
                 }
+                Expression::Enum(e) => Some(self.enum_visitor.visit_enum(ast, e)),
                 Expression::HttpEndpoint(endpoint) => {
                     methods.push(indent(&self.endpoint_visitor.visit(ast, &endpoint), "  "));
                     None
