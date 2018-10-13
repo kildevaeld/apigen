@@ -18,13 +18,13 @@ pub enum UserType<'a> {
 }
 
 impl<'a> UserType<'a> {
-    pub fn name(&self) -> String {
+    pub fn name(&self) -> &'a str {
         let name = match self {
             UserType::Enum(e) => &e.name,
             UserType::GenericRecord(e) => &e.name,
             UserType::Record(e) => &e.name,
         };
-        name.to_owned()
+        name
     }
 }
 
@@ -43,9 +43,10 @@ pub enum Builtin {
     String,
     Bytes,
     Bool,
-    Map,
+    Object,
     Date,
     Void,
+    Any,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
@@ -163,7 +164,15 @@ pub struct AnonymousRecordExpression {
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub struct EnumExpression {
     pub name: String,
-    pub variants: Vec<String>,
+    pub properties: Vec<EnumPropertyExpression>,
+    pub location: Location,
+}
+
+#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
+
+pub struct EnumPropertyExpression {
+    pub name: String,
+    pub value: i32,
     pub location: Location,
 }
 

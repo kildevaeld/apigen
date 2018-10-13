@@ -1,8 +1,17 @@
 
+
+enum BlogState {
+    Draft
+    Published
+    Editing = 200
+    Uknown
+}
+
 record Blog {
     id string
     title string
     body string
+    state BlogState
 }
 
 

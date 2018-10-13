@@ -151,20 +151,75 @@ fn parse_json_value(input: &Pair) -> JSONExpression {
     JSONExpression::Null
 }
 
+fn parse_enum_property(input: &Pair, parent: i32) -> EnumPropertyExpression {
+    let span = input.clone().into_span();
+
+    let value = parent + 1;
+
+    let mut e = EnumPropertyExpression {
+        name: String::from(""),
+        value: value,
+        location: Location(span.start(), span.end()),
+    };
+
+    match input.as_rule() {
+        //Rule::indetifier => e.name = String::from(span.as_str()),
+        Rule::enum_type_body_auto => e.name = span.as_str().to_owned(),
+        Rule::enum_type_body_assign => {
+            let inner = input.clone().into_inner();
+            for pair in inner {
+                let span = pair.clone().into_span();
+                match pair.as_rule() {
+                    Rule::identifier => e.name = span.as_str().to_owned(),
+                    Rule::number => e.value = span.as_str().parse().unwrap(),
+                    _ => {}
+                };
+            }
+            // e.properties.push(parse_enum_property(&pair, last_value));
+            // last_value = e.properties.last().unwrap().value;
+        }
+        //Rule::identifier => e.variants.push(String::from(span.as_str())),
+        _ => {}
+    };
+
+    // for pair in input.clone().into_inner() {
+    //     let span = pair.clone().into_span();
+    //     println!("{:?}", pair);
+    //     match pair.as_rule() {
+    //         //Rule::indetifier => e.name = String::from(span.as_str()),
+    //         Rule::enum_type_body_auto => e.name = span.as_str().to_owned(),
+    //         Rule::enum_type_body_assign => {
+    //             // e.properties.push(parse_enum_property(&pair, last_value));
+    //             // last_value = e.properties.last().unwrap().value;
+    //             println!("{:?}", pair);
+    //         }
+    //         //Rule::identifier => e.variants.push(String::from(span.as_str())),
+    //         _ => {}
+    //     };
+    // }
+
+    e
+}
+
 fn parse_enum(input: &Pair) -> EnumExpression {
     let span = input.clone().into_span();
 
     let mut e = EnumExpression {
         name: String::from(""),
-        variants: vec![],
+        properties: vec![],
         location: Location(span.start(), span.end()),
     };
-
+    let mut last_value = -1;
     for pair in input.clone().into_inner() {
         let span = pair.clone().into_span();
+
         match pair.as_rule() {
             Rule::type_name => e.name = String::from(span.as_str()),
-            Rule::identifier => e.variants.push(String::from(span.as_str())),
+            Rule::enum_type_body_auto | Rule::enum_type_body_assign => {
+                e.properties.push(parse_enum_property(&pair, last_value));
+                last_value = e.properties.last().unwrap().value;
+            }
+            //Rule::identifier => e.variants.push(String::from(span.as_str())),
             _ => {}
         };
     }

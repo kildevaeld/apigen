@@ -67,7 +67,7 @@ enum_type_body_prop = _{
 }
 
 enum_type_body_assign = {
-    identifier ~wscmnl* ~ "=" ~wscmnl* number
+    identifier ~wscmnl* ~ "=" ~wscmnl* ~number
 }
 
 enum_type_body_auto = {
