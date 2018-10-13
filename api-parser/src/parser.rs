@@ -196,22 +196,22 @@ fn parse_generic_type(input: &Pair) -> Type {
 
 fn parse_builtin_type(input: &str) -> Type {
     let t = match input {
-        "int64" => Builtin::Int64,
-        "int32" => Builtin::Int32,
-        "int16" => Builtin::Int16,
-        "int8" => Builtin::Int8,
-        "uint64" => Builtin::Uint64,
-        "uint32" => Builtin::Uint32,
-        "uint16" => Builtin::Uint16,
-        "uint8" => Builtin::Uint8,
-        "float" => Builtin::Float,
-        "double" => Builtin::Double,
+        "i64" => Builtin::Int64,
+        "i32" => Builtin::Int32,
+        "i16" => Builtin::Int16,
+        "i8" => Builtin::Int8,
+        "u64" => Builtin::Uint64,
+        "u32" => Builtin::Uint32,
+        "u16" => Builtin::Uint16,
+        "u8" => Builtin::Uint8,
+        "f32" => Builtin::Float,
+        "f64" => Builtin::Double,
         "string" => Builtin::String,
         "bytes" => Builtin::Bytes,
         "bool" => Builtin::Bool,
-        "map" => Builtin::Map,
+        "object" => Builtin::Object,
         "date" => Builtin::Date,
-
+        "any" => Builtin::Any,
         _ => Builtin::Void,
     };
     Type::Builtin(t)
