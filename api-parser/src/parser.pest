@@ -95,6 +95,7 @@ http_endpoint_property = _{
     | http_endpoint_query
     | http_endpoint_description_wrapper
     | http_endpoint_auth
+    | http_endpoint_headers
 }
 
 http_endpoint_body = {
@@ -113,9 +114,29 @@ http_endpoint_auth_type = {
     "token" | "simple"
 }
 
-
 http_endpoint_returns = {
     "returns" ~wscmnl* ~ all_types 
+}
+
+http_endpoint_headers = {
+    "headers" ~wscmnl* ~"[" ~wscmnl* ~http_endpoint_headers_header ~("," ~wscmnl* ~http_endpoint_headers_header)* ~wscmnl* ~ "]"
+}
+
+http_endpoint_headers_header = _{
+    http_endpoint_headers_header_required | http_endpoint_headers_header_optional
+}
+
+http_endpoint_headers_header_required = {
+    http_endpoint_headers_header_key
+}
+
+
+http_endpoint_headers_header_optional = {
+    http_endpoint_headers_header_key ~wscmnl* ~"?"
+}
+
+http_endpoint_headers_header_key = _{
+    alphas ~(alphas | digit | "-" )*
 }
 
 http_endpoint_description_wrapper = _{
@@ -191,7 +212,9 @@ comma = _{ "," }
 
 colon = _{ ":" }
 
-alphas = _{ 'A'..'Z' }
+alphal = _{ 'A'..'Z' }
+
+alphas = _{ 'a'..'z' }
 
 alpha = _{ 'a'..'z' | 'A'..'Z' }
 

@@ -53,7 +53,7 @@ impl TypeExpressionVisitor {
     }
 
     pub fn visit_anonymous_type(&self, _exp: &AnonymousRecordExpression) -> String {
-        "Anonym".to_string()
+        panic!("ananonymous_type not handled by pass");
     }
 
     pub fn visit_type(&self, module: &ModuleExpression, exp: &Type) -> String {

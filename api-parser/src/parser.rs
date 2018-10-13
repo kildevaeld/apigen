@@ -501,6 +501,35 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
                     .properties
                     .push(HttpEndpointPropertyExpression::Auth(auth))
             }
+            Rule::http_endpoint_headers => {
+                let inner = pair.clone().into_inner();
+                let span = pair.clone().into_span();
+                let mut header = HttpEndpointHeadersExpression {
+                    value: vec![],
+                    location: Location(span.start(), span.end()),
+                };
+                for p in inner {
+                    let span = p.clone().into_span().as_str().to_owned();
+                    match p.as_rule() {
+                        Rule::http_endpoint_headers_header_required => {
+                            header.value.push(HttpEndpointHeaderExpression {
+                                name: span,
+                                value: TypeExpression::Required(Type::Builtin(Builtin::String)),
+                            });
+                        }
+                        Rule::http_endpoint_headers_header_optional => {
+                            header.value.push(HttpEndpointHeaderExpression {
+                                name: span,
+                                value: TypeExpression::Optional(Type::Builtin(Builtin::String)),
+                            });
+                        }
+                        _ => {}
+                    };
+                }
+                endpoint
+                    .properties
+                    .push(HttpEndpointPropertyExpression::Headers(header))
+            }
             _ => {}
         };
     }

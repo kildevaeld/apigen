@@ -2,7 +2,7 @@
 import ./models.api
 
 get /blog {
-    returns Blog[]
+    returns [Blog]
 }
 
 post /blog {
@@ -18,7 +18,10 @@ get /blog/:id { returns Blog? }
 
 put /blog/:id { 
     returns Blog
-    body Blog 
+    body Blog
+    headers [
+        content-type
+    ]
 }
 
 delete /blog/:id { 

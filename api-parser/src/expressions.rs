@@ -275,6 +275,29 @@ pub enum HttpEndpointPropertyExpression {
     Description(String),
     Returns(TypeExpression),
     Auth(HttpEndpointAuthType),
+    Headers(HttpEndpointHeadersExpression),
+}
+
+#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
+
+pub struct HttpEndpointHeadersExpression {
+    pub value: Vec<HttpEndpointHeaderExpression>,
+    pub location: Location,
+}
+
+// #[serde(tag = "type", content = "value")]
+// #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
+
+// pub enum HttpEndpointHeaderTypeExpression {
+//     Optional(HttpEndpointHeaderExpression),
+//     Required(HttpEndpointHeaderExpression),
+// }
+
+#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
+
+pub struct HttpEndpointHeaderExpression {
+    pub name: String,
+    pub value: TypeExpression,
 }
 
 #[serde(tag = "type")]
