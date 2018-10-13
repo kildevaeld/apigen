@@ -8,6 +8,7 @@ pub enum Type {
     User(String),
     Generic(GenericExpression),
     Anonymous(AnonymousRecordExpression),
+    //Array(Type<),
 }
 
 #[derive(PartialEq, Debug)]
