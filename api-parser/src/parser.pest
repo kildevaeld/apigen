@@ -59,7 +59,19 @@ enum_type = {
 }
 
 enum_type_body = _{
-    identifier ~ ((comma | nl) ~wscmnl* ~ identifier )*
+    enum_type_body_prop ~ ((comma | nl) ~wscmnl* ~ enum_type_body_prop )*
+}
+
+enum_type_body_prop = _{
+    enum_type_body_assign | enum_type_body_auto
+}
+
+enum_type_body_assign = {
+    identifier ~wscmnl* ~ "=" ~wscmnl* number
+}
+
+enum_type_body_auto = {
+    identifier
 }
 
 // Property 
@@ -146,11 +158,11 @@ generic_type = { type_name ~"<" ~(optional_type | repeated_type | types | anonym
 types = _{ type_builtins | type_name }
 
 type_builtins = { 
-    "int8" | "int16" | "int32" | "int64" |
-    "uint8" | "uint16" | "uint32" | "uint64" |
-    "float" | "double" |
+    "i8" | "i16" | "i32" | "i64" |
+    "u8" | "u16" | "u32" | "u64" |
+    "f32" | "f64" |
     "string" | "bytes" |
-    "bool" | "map" | "date" | "void"
+    "bool" | "object" | "date" | "void" | "any"
 }
 
 // Annotation
