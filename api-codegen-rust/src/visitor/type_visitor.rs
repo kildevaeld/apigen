@@ -23,10 +23,10 @@ impl TypeExpressionVisitor {
             Builtin::Float => "f64",
             Builtin::Bool => "bool",
             Builtin::String => "String",
-            Builtin::Object => "api_support::Map",
+            Builtin::Object => "api_support::Object",
             Builtin::Void => "()",
             Builtin::Bytes => "Vec<u8>",
-            Builtin::Any => "api_support::Map",
+            Builtin::Any => "api_support::Any",
             _ => "",
         };
         m.to_string()
