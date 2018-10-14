@@ -16,6 +16,8 @@ pub struct MethodModel {
     pub has_body: bool,
     pub has_query: bool,
     pub has_auth: bool,
+    pub has_headers: bool,
+    pub headers: Vec<String>,
 }
 
 #[derive(Serialize)]

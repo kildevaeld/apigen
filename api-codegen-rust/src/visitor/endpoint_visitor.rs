@@ -2,9 +2,9 @@ use api_parser::expressions::{
     HttpEndpointExpression, HttpEndpointPathExpression, HttpEndpointPropertyExpression, HttpMethod,
     ModuleExpression,
 };
+use heck::{CamelCase, SnakeCase};
 use template::{render_method, MethodModel};
 use visitor::vi::TypeExpressionVisitor;
-
 pub struct EndpointVisitor {
     type_visitor: TypeExpressionVisitor,
 }
@@ -35,6 +35,8 @@ impl EndpointVisitor {
         let mut has_body = false;
         let mut has_query = false;
         let mut has_auth = false;
+        let mut has_headers = false;
+        let mut headers = vec![];
 
         for n in &exp.path {
             name.push(match n {
@@ -73,6 +75,20 @@ impl EndpointVisitor {
                     has_auth = true;
                     arguments.push(format!("auth: auth::Authorization"));
                 }
+                HttpEndpointPropertyExpression::Headers(h) => {
+                    has_headers = true;
+                    arguments.push(format!(
+                        "headers: {}",
+                        format!("{}_{}", exp.name(), "Headers").to_camel_case()
+                    ));
+                    for p in &h.value {
+                        headers.push(format!(
+                            "utils::set_header(request, \"{}\", &headers.{})",
+                            p.name,
+                            p.name.to_snake_case()
+                        ));
+                    }
+                }
                 _ => {}
             };
         }
@@ -88,6 +104,8 @@ impl EndpointVisitor {
             has_body,
             has_query,
             has_auth,
+            has_headers,
+            headers,
         })
     }
 }

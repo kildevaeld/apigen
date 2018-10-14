@@ -20,6 +20,9 @@ pub fn {{method_name}}(&self) -> Box<Future<Item={{{method_return}}}, Error=erro
         auth::Authorization::Simple(user,pw) => request.basic_auth(user, Some(pw)),
     };
     {{/if}}
+    {{#each headers}}
+    request = {{{this}}};
+    {{/each}}
 
     async_request!(self.client, request, {{{method_return}}})
 }
