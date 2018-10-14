@@ -1,6 +1,7 @@
 use error;
 use serde;
 use serde_json;
+use std::fmt;
 use url::Url;
 pub fn decode<'a, T>(mime: &str, value: &'a [u8]) -> error::Result<T>
 where
@@ -31,10 +32,18 @@ pub fn join(endpoint: &str, path: &[&str]) -> error::Result<Url> {
     //Ok(url)
 }
 
-pub fn join_query(endpoint: &str, path: &[&str]) -> error::Result<Url> {
-    let mut url: Url = endpoint.parse()?;
-    let mut full_path = path.join("/");
-    url.set_path(&mut full_path);
+// pub fn join_query(endpoint: &str, path: &[&str]) -> error::Result<Url> {
+//     let mut url: Url = endpoint.parse()?;
+//     let mut full_path = path.join("/");
+//     url.set_path(&mut full_path);
 
-    Ok(url)
+//     Ok(url)
+// }
+
+pub fn set_header<T: fmt::Display>(
+    request: reqwest::RequestBuilder,
+    name: &str,
+    value: T,
+) -> reqwest::RequestBuilder {
+    request.header(name, format!("{}", value))
 }
