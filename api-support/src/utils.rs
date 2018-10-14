@@ -41,9 +41,9 @@ pub fn join(endpoint: &str, path: &[&str]) -> error::Result<Url> {
 // }
 
 pub fn set_header<T: fmt::Display>(
-    request: reqwest::RequestBuilder,
+    request: reqwest::async::RequestBuilder,
     name: &str,
     value: T,
-) -> reqwest::RequestBuilder {
+) -> reqwest::async::RequestBuilder {
     request.header(name, format!("{}", value))
 }
