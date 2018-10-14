@@ -1,7 +1,7 @@
 use api_analyzer::Pass;
 use api_analyzer::Result;
 use api_parser::expressions::*;
-use heck::CamelCase;
+use heck::{CamelCase, SnakeCase};
 
 #[derive(Debug)]
 pub struct RustPass;
@@ -115,6 +115,27 @@ impl RustPass {
                 }
                 HttpEndpointPropertyExpression::Query(query) => {
                     *query = self.resolve_type(query, &name, "Query", &mut out);
+                }
+                HttpEndpointPropertyExpression::Headers(headers) => {
+                    // *headers = HttpEndpointHeadersExpression {
+                    //     location: headers.location.clone(),
+                    //     value:
+                    // }
+
+                    let mut re = RecordExpression {
+                        name: format!("{}_{}", name, "Headers").to_camel_case(),
+                        location: headers.location.clone(),
+                        annotations: vec![],
+                        properties: vec![],
+                    };
+                    for p in &headers.value {
+                        re.properties.push(RecordPropertyExpression {
+                            name: p.name.clone().to_snake_case(),
+                            value: p.value.clone(),
+                            location: headers.location.clone(),
+                        });
+                    }
+                    out.push(re);
                 }
                 _ => {}
             };
