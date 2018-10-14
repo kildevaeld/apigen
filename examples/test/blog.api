@@ -20,7 +20,7 @@ put /blog/:id {
     returns Blog
     body Blog
     headers [
-        content-type
+        content-type, some-other-optional-header?
     ]
 }
 
