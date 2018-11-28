@@ -501,6 +501,7 @@ fn parse_http_endpoint(input: &Pair) -> HttpEndpointExpression {
                     .properties
                     .push(HttpEndpointPropertyExpression::Auth(auth))
             }
+
             Rule::http_endpoint_headers => {
                 let inner = pair.clone().into_inner();
                 let span = pair.clone().into_span();

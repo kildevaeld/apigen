@@ -35,10 +35,14 @@ generic_type_parameters =  { identifier ~( "," ~wscmnl* ~identifier)* }
 
 
 record_type = { 
-    (annotations* ~ wscmnl+)? ~ "record" ~ wscm* ~ type_name ~ wscm* ~ "{" ~ wscmnl*
+    (annotations* ~ wscmnl+)? ~ "record" ~ wscm* ~ type_name ~ wscm*  ~"{" ~ wscmnl*
         ~ record_type_body*
         ~ wscmnl*
         ~ "}"
+}
+
+record_type_extends = {
+    "extends"
 }
 
 anonymous_record_type = {
@@ -79,10 +83,14 @@ property = { (annotations* ~ wscmnl+)? ~ identifier ~ ws+ ~ all_types }
 
 
 // HTTP-API
-http_endpoint = { http_method ~wscm+ ~ http_path ~wscmnl+ ~ "{" ~wscmnl+ 
+http_endpoint = { http_method ~wscm+ ~ http_endpoint_name? ~ http_path ~wscmnl+ ~ "{" ~wscmnl+ 
     ~ http_endpoint_body_*
     ~ wscmnl*
     ~ "}"
+}
+
+http_endpoint_name = {
+    "@" ~identifier
 }
 
 http_endpoint_body_ = _{

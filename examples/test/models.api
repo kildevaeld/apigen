@@ -7,6 +7,10 @@ enum BlogState {
     Uknown
 }
 
+record Parent {
+    id string
+}
+
 record Blog {
     id string
     title string

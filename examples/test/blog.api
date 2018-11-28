@@ -5,7 +5,7 @@ get /blog {
     returns [Blog]
 }
 
-post /blog {
+post @create/blog {
     returns Blog
     body {
         title string
